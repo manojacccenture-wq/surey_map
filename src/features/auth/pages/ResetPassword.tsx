@@ -1,0 +1,128 @@
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useDispatch, useSelector } from "react-redux";
+
+import type { RootState, AppDispatch } from "@/store";
+
+import PasswordStrengthInput from "@/shared/components/UI/PasswordStrengthInput/PasswordStrengthInput";
+import Input from "@/shared/components/UI/Input/Input";
+import Button from "@/shared/components/UI/Button/Button";
+
+import { clearError } from "@/features/auth/authSlice";
+import { resetPasswordAsync } from "@/features/auth/authThunk";
+
+// Validation
+const resetSchema = z
+  .object({
+    password: z
+      .string()
+      .min(8, "Password must be at least 8 characters"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+type ResetPasswordFormData = z.infer<typeof resetSchema>;
+
+const ResetPassword: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
+
+  // Get auth state from Redux
+  const { status, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const username: string | undefined = (location.state as any)?.username;
+  const email: string | null = localStorage.getItem("resetEmail");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ResetPasswordFormData>({
+    resolver: zodResolver(resetSchema),
+  });
+
+  const isLoading = status === "loading";
+
+  // Handle successful password reset
+  useEffect(() => {
+    if (status === "succeeded") {
+      navigate("/");
+    }
+  }, [status, navigate]);
+
+  const onSubmit: SubmitHandler<ResetPasswordFormData> = async (data) => {
+    dispatch(clearError());
+
+    if (!email) {
+      console.error("No email found for password reset");
+      return;
+    }
+
+    try {
+      await dispatch(
+        resetPasswordAsync({
+          email: email,
+          newPassword: data.password,
+        })
+      ).unwrap();
+    } catch (err) {
+      console.error("Password reset failed:", err);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="w-full max-w-md rounded-2xl p-8">
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Reset Password
+        </h2>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <PasswordStrengthInput
+            label="New Password"
+            placeholder="Enter new password"
+            error={!!errors.password}
+            helperText={errors.password?.message}
+            {...register("password")}
+            disabled={isLoading}
+          />
+
+          <Input
+            type="password"
+            label="Confirm Password"
+            placeholder="Re-enter password"
+            error={!!errors.confirmPassword}
+            helperText={errors.confirmPassword?.message}
+            {...register("confirmPassword")}
+            disabled={isLoading}
+          />
+
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+          >
+            {isLoading ? "Updating..." : "Update Password"}
+          </Button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default ResetPassword;
