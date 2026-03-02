@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
-import type { RootState, AppDispatch } from "@/store";
 
 import Input from "@/shared/components/UI/Input/Input";
 import Button from "@/shared/components/UI/Button/Button";
 
 import { clearError } from "@/features/auth/authSlice";
 import { verifyMfaAsync } from "@/features/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
-import { maskEmail } from "@/shared/lib/helpers";
+// import { maskEmail } from "@/shared/lib/helpers";
 
 interface MFAFormData {
   otp: string;
@@ -19,12 +18,11 @@ interface MFAFormData {
 
 const MFA: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error, mfaPending, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, error, mfaPending, tempCredentials } = useAppSelector((state) => state.auth);
+
 
   const [timer, setTimer] = useState<number>(60);
 
@@ -39,14 +37,13 @@ const MFA: React.FC = () => {
   });
 
   const isLoading = status === "loading";
-  const email: string | null = localStorage.getItem("mfaEmail");
 
   // Handle successful MFA verification
   useEffect(() => {
-    if (!mfaPending && user && status === "succeeded") {
+    if (!mfaPending && status === "succeeded") {
       navigate("/dashboard");
     }
-  }, [mfaPending, user, status, navigate]);
+  }, [mfaPending, status, navigate]);
 
   const startTimer = (): void => {
     let count = 60;
@@ -69,8 +66,20 @@ const MFA: React.FC = () => {
   const onSubmit: SubmitHandler<MFAFormData> = async (data) => {
     dispatch(clearError());
 
+    if (!tempCredentials) {
+      console.error("Missing temporary credentials");
+      navigate("/");
+      return;
+    }
+
     try {
-      await dispatch(verifyMfaAsync(data.otp)).unwrap();
+      await dispatch(
+        verifyMfaAsync({
+          username: tempCredentials.username,
+          password: tempCredentials.password,
+          otp: data.otp,
+        })
+      ).unwrap();
     } catch (err) {
       // Error handled by Redux slice
     }
@@ -84,7 +93,7 @@ const MFA: React.FC = () => {
         </h2>
 
         <p className="text-center text-xs sm:text-sm text-gray-500 mb-2">
-          OTP sent to <span>{maskEmail(email ?? "")}</span>
+          {/* OTP sent to <span>{maskEmail(email ?? "")}</span> */}
         </p>
 
         <p className="text-center text-xs sm:text-sm text-gray-500 mb-6 sm:mb-8">

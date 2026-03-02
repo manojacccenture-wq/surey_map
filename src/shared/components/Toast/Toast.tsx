@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 
-type ToastType = "success" | "error" | "info";
+import type { ToastType } from "@/shared/components/Toast/api/toastSlice";
+
 
 interface ToastProps {
   message?: string | null;
@@ -27,12 +28,14 @@ const Toast: React.FC<ToastProps> = ({
 
   if (!message) return null;
 
-  const bgColor =
-    type === "success"
-      ? "bg-green-500"
-      : type === "error"
-      ? "bg-red-500"
-      : "bg-blue-500";
+const bgColor =
+  type === "success"
+    ? "bg-green-500"
+    : type === "error"
+    ? "bg-red-500"
+    : type === "warning"
+    ? "bg-yellow-500"
+    : "bg-blue-500";
 
   return (
     <div className="fixed top-6 right-6 z-[9999]">

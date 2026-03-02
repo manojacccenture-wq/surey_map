@@ -1,78 +1,64 @@
 import React, { useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useDispatch, useSelector } from "react-redux";
 import { useForm, type SubmitHandler } from "react-hook-form";
 
-// import type { RootState, AppDispatch } from "@/store";
 
 import Input from "@/shared/components/UI/Input/Input";
 import Button from "@/shared/components/UI/Button/Button";
-import Checkbox from "@/shared/components/UI/CheckBox/Checkbox";
 
-import { signInSchema } from "@/features/auth/schemas/auth.schema";
+import { signInSchema, type SignInSchemaType } from "@/features/auth/schemas/auth.schema";
 import { loginAsync } from "@/features/auth/authThunk";
 import { clearError } from "@/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
-import type { LoginRequest } from "@/features/auth/api/authApi";
-
-type SignInFormData = {
-  username: string;
-  password: string;
-  rememberMe: boolean;
-};
 
 const SignIn: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error, user, mfaPending } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, error, mfaPending, isAuthenticated } = useAppSelector((state) => state.auth);
 
   const {
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
-  } = useForm<SignInFormData>({
+  } = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
     mode: "onTouched",
     defaultValues: {
       username: "",
       password: "",
-      rememberMe: false,
+      // rememberMe: false,
     },
   });
 
-  const password = watch("password", "");
-  const username = watch("username", "");
-  const rememberMe = watch("rememberMe");
+
 
   const isLoading = status === "loading";
 
-  // Handle successful login
   useEffect(() => {
-    if (user && !mfaPending) {
-      navigate("/dashboard");
-    } else if (user && mfaPending) {
-      const generatedOtp = "123456";
-      localStorage.setItem("otp", generatedOtp);
-      localStorage.setItem("mfaEmail", user.email);
-      localStorage.setItem("mfaUser", user.username);
+    if (mfaPending) {
       navigate("/mfa");
+      return;
     }
-  }, [user, mfaPending, navigate]);
 
- const onSubmit: SubmitHandler<SignInFormData> = async (data) => {
-  dispatch(clearError());
+    // if (isAuthenticated) {
+    //   navigate("/dashboard");
+    // }
+  }, [mfaPending, isAuthenticated, navigate]);
 
-  try {
-    await dispatch(loginAsync(data)).unwrap();
-  } catch { /* empty */ }
-};
+
+
+  const onSubmit: SubmitHandler<SignInSchemaType> = async (data) => {
+    dispatch(clearError());
+
+    try {
+      await dispatch(loginAsync(data)).unwrap();
+    } catch { /* empty */ }
+  };
 
   const handleNavigateForgotPassword = (): void => {
     navigate("/forgotPassword");
@@ -113,10 +99,8 @@ const SignIn: React.FC = () => {
               placeholder="Username"
               error={!!errors.username}
               helperText={errors.username?.message}
+              formatter={(value) => value.toUpperCase()}   //  clean
               {...register("username")}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setValue("username", e.target.value.toUpperCase())
-              }
               disabled={isLoading}
             />
 
@@ -126,10 +110,10 @@ const SignIn: React.FC = () => {
               error={!!errors.password}
               {...register("password")}
               helperText={errors.password?.message}
-        
+
             />
 
-            <div className="flex gap-3 items-center">
+            {/* <div className="flex gap-3 items-center">
               <Checkbox
                 checked={rememberMe}
                 label="Remember me"
@@ -139,7 +123,7 @@ const SignIn: React.FC = () => {
                 {...register("rememberMe")}
                 disabled={isLoading}
               />
-            </div>
+            </div> */}
           </div>
 
           <div className="flex flex-col gap-3">

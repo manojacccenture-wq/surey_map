@@ -7,6 +7,7 @@ import type { LoginRequest } from "@/features/auth/api/auth.types";
 
 const API_ENDPOINTS = {
   LOGIN: "token",
+  ME:"me",
   REGISTER: "register",
   VERIFY_MFA: "verify-mfa",
   LOGOUT: "logout",
@@ -22,26 +23,42 @@ export interface ResetPasswordRequest {
 }
 
 const authService = {
-login: (data: LoginRequest) => {
-  const formData = new URLSearchParams();
-  formData.append("grant_type", "password");
-  formData.append("username", data.username);
-  formData.append("password", data.password);
+  login: (data: LoginRequest) => {
+    const formData = new URLSearchParams();
+    formData.append("grant_type", "password");
+    formData.append("username", data.username);
+    formData.append("password", data.password);
 
-  return apiClient.post(API_ENDPOINTS.LOGIN, formData, {
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  });
-},
+    return apiClient.post(API_ENDPOINTS.LOGIN, formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
+  },
 
-  register: (data: RegisterRequest) => {
+  register: (data: any) => {
     return apiClient.post(API_ENDPOINTS.REGISTER, data);
   },
 
-  verifyMfa: (otp: string) => {
-    return apiClient.post(API_ENDPOINTS.VERIFY_MFA, { otp });
+  verifyMfa: (data: { username: string; password: string; otp: string }) => {
+    const formData = new URLSearchParams();
+
+    formData.append("grant_type", "password");
+    formData.append("username", data.username);
+    formData.append("password", data.password);
+    formData.append("otp", data.otp);
+    formData.append("otp_provider", "EmailCode");
+
+    return apiClient.post("token", formData, {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    });
   },
+
+
+
+
 
   logout: () => {
     return apiClient.post(API_ENDPOINTS.LOGOUT);
@@ -53,6 +70,10 @@ login: (data: LoginRequest) => {
 
   resetPassword: (data: ResetPasswordRequest) => {
     return apiClient.post(API_ENDPOINTS.RESET_PASSWORD, data);
+  },
+
+  getMe: () => {
+    return apiClient.get(API_ENDPOINTS.ME);
   },
 };
 

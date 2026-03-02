@@ -1,46 +1,73 @@
-import React, { useMemo } from 'react';
+import React, { useMemo } from "react";
 
-const PasswordStrengthChecker = ({ password = '' }) => {
-  const requirements = [
+/* ================= TYPES ================= */
+
+interface Requirement {
+  label: string;
+  test: (pwd: string) => boolean;
+  met?: boolean;
+}
+
+interface StrengthData {
+  strength: string;
+  color: string;
+  progressPercentage: number;
+  requirements: Requirement[];
+}
+
+interface PasswordStrengthCheckerProps {
+  password?: string;
+}
+
+/* ================= COMPONENT ================= */
+
+const PasswordStrengthChecker: React.FC<PasswordStrengthCheckerProps> = ({
+  password = "",
+}) => {
+  const requirements: Requirement[] = [
     {
-      label: 'Uppercase and lowercase letter',
-      test: (pwd) => /(?=.*[a-z])(?=.*[A-Z])/.test(pwd),
+      label: "Uppercase and lowercase letter",
+      test: (pwd: string) => /(?=.*[a-z])(?=.*[A-Z])/.test(pwd),
     },
     {
-      label: 'Special characters',
-      test: (pwd) => /(?=.*[^A-Za-z\d])/.test(pwd),
+      label: "Special characters",
+      test: (pwd: string) => /(?=.*[^A-Za-z\d])/.test(pwd),
     },
     {
-      label: 'Must have at least 12-16 characters',
-      test: (pwd) => pwd.length >= 12,
+      label: "Must have at least 12-16 characters",
+      test: (pwd: string) => pwd.length >= 12,
     },
   ];
 
-  const strengthData = useMemo(() => {
+  const strengthData = useMemo<StrengthData | null>(() => {
     if (!password) return null;
 
-    const metRequirements = requirements.filter((req) => req.test(password)).length;
-    const length = password.length;
-    const progressPercentage = (metRequirements / requirements.length) * 100;
+    const metRequirements = requirements.filter((req) =>
+      req.test(password)
+    ).length;
 
-    let strength = '';
-    let color = '';
+    const length = password.length;
+    const progressPercentage =
+      (metRequirements / requirements.length) * 100;
+
+    let strength = "";
+    let color = "";
 
     if (metRequirements === 3 && length >= 16) {
-      strength = 'Very Strong';
-      color = '#00BFA6';
+      strength = "Very Strong";
+      color = "#00BFA6";
     } else if (metRequirements === 3) {
-      strength = 'Strong';
-      color = '#2ECC71';
+      strength = "Strong";
+      color = "#2ECC71";
     } else if (metRequirements === 2 || length >= 12) {
-      strength = 'Good';
-      color = '#2ECC71';
+      strength = "Good";
+      color = "#2ECC71";
     } else if (metRequirements === 1 || length >= 8) {
-      strength = 'Fair';
-      color = '#FFA500';
+      strength = "Fair";
+      color = "#FFA500";
     } else {
-      strength = 'Weak';
-      color = '#F44444';
+      strength = "Weak";
+      color = "#F44444";
     }
 
     return {
@@ -84,8 +111,8 @@ const PasswordStrengthChecker = ({ password = '' }) => {
               <div
                 className={`relative shrink-0 size-[16px] rounded-[4px] border border-solid transition-all duration-200 ${
                   req.met
-                    ? 'bg-[#00bfa6] border-[#00bfa6]'
-                    : 'border-[#cbced6] bg-white'
+                    ? "bg-[#00bfa6] border-[#00bfa6]"
+                    : "border-[#cbced6] bg-white"
                 }`}
               >
                 {req.met && (

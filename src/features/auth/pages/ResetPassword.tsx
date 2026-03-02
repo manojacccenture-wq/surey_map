@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useForm, SubmitHandler } from "react-hook-form";
+import {  useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useDispatch, useSelector } from "react-redux";
 
-import type { RootState, AppDispatch } from "@/store";
+
 
 import PasswordStrengthInput from "@/shared/components/UI/PasswordStrengthInput/PasswordStrengthInput";
 import Input from "@/shared/components/UI/Input/Input";
@@ -13,6 +12,7 @@ import Button from "@/shared/components/UI/Button/Button";
 
 import { clearError } from "@/features/auth/authSlice";
 import { resetPasswordAsync } from "@/features/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 // Validation
 const resetSchema = z
@@ -30,16 +30,13 @@ const resetSchema = z
 type ResetPasswordFormData = z.infer<typeof resetSchema>;
 
 const ResetPassword: React.FC = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, error } = useAppSelector((state) => state.auth);
 
-  const username: string | undefined = (location.state as any)?.username;
+
   const email: string | null = localStorage.getItem("resetEmail");
 
   const {
@@ -59,7 +56,7 @@ const ResetPassword: React.FC = () => {
     }
   }, [status, navigate]);
 
-  const onSubmit: SubmitHandler<ResetPasswordFormData> = async (data) => {
+  const onSubmit = async (data: ResetPasswordFormData) => {
     dispatch(clearError());
 
     if (!email) {

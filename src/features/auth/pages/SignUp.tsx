@@ -1,19 +1,19 @@
 import React, { useMemo, useEffect } from "react";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import type { RootState, AppDispatch } from "@/store";
 
 import Input from "@/shared/components/UI/Input/Input";
 import Button from "@/shared/components/UI/Button/Button";
 import Checkbox from "@/shared/components/UI/CheckBox/Checkbox";
 import PasswordStrengthInput from "@/shared/components/UI/PasswordStrengthInput/PasswordStrengthInput";
 
-import { signUpSchema } from "@/features/auth/schemas/signup.schema";
+import { signUpSchema } from "@/features/auth/schemas/auth.schema";
 import { clearError } from "@/features/auth/authSlice";
 import { registerAsync } from "@/features/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 type SignUpFormData = {
   fullName: string;
@@ -26,12 +26,10 @@ type SignUpFormData = {
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, error, user } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -52,7 +50,6 @@ const SignUp: React.FC = () => {
   });
 
   const identifier = watch("identifier");
-  const password = watch("password");
   const isLoading = status === "loading";
 
   const detectedType = useMemo<"email" | "phone" | null>(() => {

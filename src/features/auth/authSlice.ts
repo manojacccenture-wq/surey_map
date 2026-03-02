@@ -1,14 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { loginAsync,registerAsync,verifyMfaAsync, logoutAsync,requestPasswordResetAsync,resetPasswordAsync} from '@/features/auth/authThunk';
+import { loginAsync, registerAsync, verifyMfaAsync, logoutAsync, requestPasswordResetAsync, resetPasswordAsync, restoreSessionAsync } from '@/features/auth/authThunk';
 
-const initialState = {
-  user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
-  token: localStorage.getItem('authToken') || null,
+interface TempCredentials {
+  username: string;
+  password: string;
+}
+
+interface AuthState {
+  user: any | null; // replace `any` with proper User type later
+  isAuthenticated: boolean;
+  mfaPending: boolean;
+  tempCredentials: TempCredentials | null;
+  resetPasswordEmail: string | null;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed' | 'pending';
+  error: string | null;
+}
+
+const initialState: AuthState = {
+  user: null,
+  isAuthenticated: false,
   mfaPending: false,
+  tempCredentials: null, // Store username + password temporarily during MFA
   resetPasswordEmail: null,
   status: 'idle', // idle | loading | succeeded | failed
   error: null,
-  isAuthenticated: !!localStorage.getItem('authToken'),
 };
 
 
@@ -31,24 +46,22 @@ const authSlice = createSlice({
     // Login
     builder
       .addCase(loginAsync.pending, (state) => {
-        state.status = 'loading';
+        state.status = "loading";
         state.error = null;
       })
-      .addCase(loginAsync.fulfilled, (state, action) => {
-        state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.token = action.payload.token;
-        state.isAuthenticated = true;
-        
-        // If 2FA is enabled, mark MFA pending
-        if (action.payload.user.isTwoFactor) {
-          state.mfaPending = true;
-          state.isAuthenticated = false;
-        }
+      .addCase(loginAsync.fulfilled, (state) => {
+        state.status = "succeeded";
       })
-      .addCase(loginAsync.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.payload;
+      .addCase(loginAsync.rejected, (state, action: any) => {
+        state.status = "idle";
+
+        if (action.payload?.type === "MFA_REQUIRED") {
+          state.mfaPending = true;
+          state.tempCredentials = action.meta.arg; // store username + password
+        } else {
+          state.mfaPending = false;
+          state.error = action.payload?.message || "Login failed";
+        }
       });
 
     // Register
@@ -57,15 +70,13 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(registerAsync.fulfilled, (state, action) => {
+      .addCase(registerAsync.fulfilled, (state) => {
         state.status = 'succeeded';
-        state.user = action.payload.user;
-        state.token = action.payload.token;
         state.isAuthenticated = true;
       })
-      .addCase(registerAsync.rejected, (state, action) => {
+      .addCase(registerAsync.rejected, (state, action: any) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload?.message || "Registration failed";
       });
 
     // Verify MFA
@@ -75,13 +86,14 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(verifyMfaAsync.fulfilled, (state) => {
-        state.status = 'succeeded';
+        state.status = "succeeded";
         state.mfaPending = false;
         state.isAuthenticated = true;
+        state.tempCredentials = null; // VERY IMPORTANT
       })
-      .addCase(verifyMfaAsync.rejected, (state, action) => {
+      .addCase(verifyMfaAsync.rejected, (state, action: any) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload?.message || "MFA verification failed";
       });
 
     // Logout
@@ -91,16 +103,14 @@ const authSlice = createSlice({
       })
       .addCase(logoutAsync.fulfilled, (state) => {
         state.status = 'idle';
-        state.user = null;
-        state.token = null;
         state.isAuthenticated = false;
         state.mfaPending = false;
         state.resetPasswordEmail = null;
         state.error = null;
       })
-      .addCase(logoutAsync.rejected, (state, action) => {
+      .addCase(logoutAsync.rejected, (state, action: any) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload?.message || "Logout failed";
       });
 
     // Request Password Reset
@@ -110,14 +120,12 @@ const authSlice = createSlice({
         state.error = null;
       })
       .addCase(requestPasswordResetAsync.fulfilled, (state, action) => {
-
         state.status = 'pending';
-        // Store email for reset password step
-        state.resetPasswordEmail = action.meta.arg;
+        state.resetPasswordEmail = action.meta.arg.identifier; //  FIXED
       })
-      .addCase(requestPasswordResetAsync.rejected, (state, action) => {
+      .addCase(requestPasswordResetAsync.rejected, (state, action: any) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload?.message || "Password reset request failed";
       });
 
     // Reset Password
@@ -130,9 +138,23 @@ const authSlice = createSlice({
         state.status = 'succeeded';
         state.resetPasswordEmail = null;
       })
-      .addCase(resetPasswordAsync.rejected, (state, action) => {
+      .addCase(resetPasswordAsync.rejected, (state, action: any) => {
         state.status = 'failed';
-        state.error = action.payload;
+        state.error = action.payload?.message || "Password reset failed";
+      });
+
+    builder
+      .addCase(restoreSessionAsync.pending, (state) => {
+        state.status = "loading";
+      })
+      .addCase(restoreSessionAsync.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.isAuthenticated = true;
+        state.user = action.payload; // ✅ IMPORTANT
+      })
+      .addCase(restoreSessionAsync.rejected, (state) => {
+        state.status = "idle";
+        state.isAuthenticated = false;
       });
   },
 });

@@ -1,6 +1,16 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import type { ReactNode } from 'react';
+import { useAppSelector } from '@/app/store/hook';
 // import { hasPermission } from '../../../utils/permissionUtils/permissionUtils';
+
+
+interface RouteGuardProps {
+  children: ReactNode;
+  requireAuth?: boolean;
+  requirePublic?: boolean;
+  requireMfa?: boolean;
+  requireResetState?: boolean;
+}
 
 const RouteGuard = ({
   children,
@@ -8,14 +18,13 @@ const RouteGuard = ({
   requirePublic = false,
   requireMfa = false,
   requireResetState = false,
-  allowedRoles = [],
-  requiredPermission = null,
-
-}) => {
+}: RouteGuardProps) => {
   const location = useLocation();
 
   // Get auth state from Redux
-  const { user, isAuthenticated, mfaPending } = useSelector((state: any) => state.auth);
+  const { isAuthenticated, mfaPending } = useAppSelector((state) => state.auth);
+
+
 
   // 1️⃣ Public route (like login, signup)
   if (requirePublic && isAuthenticated && !mfaPending) {
@@ -29,8 +38,9 @@ const RouteGuard = ({
 
   // 3️⃣ MFA route
   if (requireMfa) {
-    if (!user) return <Navigate to="/" replace />;
-    if (!mfaPending) return <Navigate to="/dashboard" replace />;
+    if (!mfaPending) {
+      return <Navigate to="/" replace />;
+    }
   }
 
   // Permission-based protection
@@ -50,12 +60,12 @@ const RouteGuard = ({
   // 5️⃣ Reset password route protection
 
   if (
-  requireResetState &&
-  !location.state?.identifier &&
-  location.pathname !== "/forgotPassword"
-) {
-  return <Navigate to="/forgotPassword" replace />;
-}
+    requireResetState &&
+    !location.state?.identifier &&
+    location.pathname !== "/forgotPassword"
+  ) {
+    return <Navigate to="/forgotPassword" replace />;
+  }
 
   return children;
 };

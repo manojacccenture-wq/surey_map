@@ -34,7 +34,7 @@ const AppRouter = () => {
 
         {/* Public Auth Routes */}
 
-        <Route element={<AuthLayout />}><Route path="/" element={<><SignIn /></>} />
+        <Route element={<AuthLayout />}><Route  path="/" element={<RouteGuard requirePublic><SignIn /></RouteGuard>} />
 
           <Route path="/signup" element={<RouteGuard requirePublic> <SignUp /></RouteGuard>} />
 

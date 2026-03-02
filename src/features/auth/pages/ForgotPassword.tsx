@@ -3,15 +3,15 @@ import { z } from "zod";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
-import type { RootState, AppDispatch } from "@/store";
+
 
 import Input from "@/shared/components/UI/Input/Input";
 import Button from "@/shared/components/UI/Button/Button";
 
 import { clearError } from "@/features/auth/authSlice";
 import { requestPasswordResetAsync } from "@/features/auth/authThunk";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 //  Username validation (ADM-001 format)
 const forgotPasswordSchema = z.object({
@@ -41,12 +41,10 @@ type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 const ForgotPassword: React.FC = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error, resetPasswordEmail } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { status, error, resetPasswordEmail } = useAppSelector((state) => state.auth);
 
   const {
     register,
@@ -78,7 +76,7 @@ const ForgotPassword: React.FC = () => {
     const value = data.identifier?.trim();
 
     try {
-      await dispatch(requestPasswordResetAsync(value)).unwrap();
+      dispatch(requestPasswordResetAsync({ identifier: value })).unwrap();
     } catch (err) {
       console.error("Password reset request failed:", err);
     }

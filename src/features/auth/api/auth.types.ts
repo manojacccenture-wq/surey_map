@@ -11,3 +11,21 @@ export interface LoginResponse {
   expires_in: number;
 }
 
+export interface RegisterRequest {
+  fullName: string;
+  email: string;
+  password: string | null;
+  terms: boolean;
+  marketingConsent: boolean;
+}
+
+export interface ResetPasswordRequest {
+  email: string;
+  newPassword: string;
+}
+
+
+export interface RequestPasswordResetRequest {
+  identifier: string;
+}
+

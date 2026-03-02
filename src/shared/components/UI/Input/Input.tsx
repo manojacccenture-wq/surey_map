@@ -1,8 +1,5 @@
-import React, {
-  useState,
-  useCallback,
-  ForwardedRef,
-} from "react";
+import React, { useState, useCallback } from "react";
+import type { ForwardedRef } from "react";
 
 interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
@@ -60,14 +57,16 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           setUncontrolledValue(newValue);
         }
 
+        // Always update event value BEFORE calling RHF
+        e.target.value = newValue;
+
+        // Call RHF or parent onChange if exists
         if (onChange) {
-          e.target.value = newValue; // apply formatter result
-          onChange(e); // pass full event
+          onChange(e);
         }
       },
       [formatter, isControlled, onChange]
     );
-
     const baseInputClasses = `
       w-full
       px-[20px]
@@ -87,15 +86,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       focus:outline-none
       focus-visible:ring-2
       focus-visible:ring-[#00bfa6]
-      ${
-        error
-          ? "border-[#f44444] focus-visible:ring-[#f44444]"
-          : "border-[#cbced6] focus:border-[#00bfa6]"
+      ${error
+        ? "border-[#f44444] focus-visible:ring-[#f44444]"
+        : "border-[#cbced6] focus:border-[#00bfa6]"
       }
-      ${
-        disabled
-          ? "bg-[#f5f5f5] text-[#999999] border-[#e0e0e0] cursor-not-allowed"
-          : "text-[#333333]"
+      ${disabled
+        ? "bg-[#f5f5f5] text-[#999999] border-[#e0e0e0] cursor-not-allowed"
+        : "text-[#333333]"
       }
       ${Icon ? "pl-[58px]" : "pl-[20px]"}
       ${className}
@@ -135,7 +132,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       .replace(/\s+/g, " ")
       .trim();
 
-    const isRHF = Boolean(props.name && props.onChange);
 
     return (
       <div className={containerClasses}>
@@ -153,7 +149,8 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             type={type}
             value={value}
-            onChange={isRHF ? props.onChange : handleChange}
+            // onChange={isRHF ? onChange : handleChange}
+            onChange={handleChange}
             placeholder={placeholder}
             disabled={disabled}
             className={baseInputClasses}
