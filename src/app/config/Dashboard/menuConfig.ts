@@ -16,7 +16,7 @@ export const menuConfig = [
   {
     id: 'toilets',
     label: 'Survey List',
-    path: '/dashboard/toilets',
+    path: '/dashboard/surveyList',
     permission: PERMISSIONS.VIEW_TOILETS,
   },
   // {

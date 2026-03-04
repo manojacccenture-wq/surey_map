@@ -41,18 +41,21 @@ export const signUpSchema = z
 
             if (!result.success) {
                 ctx.addIssue({
+                    code: "custom",
                     path: ["identifier"],
-                    message: "Please enter a valid email address",
+                    message: "Please enter a valid mobile number",
                 });
             }
 
             if (!data.password) {
                 ctx.addIssue({
+                    code: "custom",
                     path: ["password"],
                     message: "Password is required",
                 });
             } else if (!passwordRegex.test(data.password)) {
                 ctx.addIssue({
+                    code: "custom",
                     path: ["password"],
                     message:
                         "Password must contain uppercase, lowercase, number and special character",
@@ -61,14 +64,18 @@ export const signUpSchema = z
 
             if (data.password !== data.confirmPassword) {
                 ctx.addIssue({
-                    path: ["confirmPassword"],
-                    message: "Passwords do not match",
+                    code: "custom",
+                    path: ["password"],
+                    message: "Password is required",
                 });
             }
         }
 
         if (!isEmail && !isPhone) {
+
+
             ctx.addIssue({
+                code: "custom",
                 path: ["identifier"],
                 message: "Please enter a valid mobile number",
             });

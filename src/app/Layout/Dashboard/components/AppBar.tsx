@@ -1,4 +1,4 @@
-import React from "react";
+
 // import arrowLeft from "../../assets/arrow-left.svg";
 
 export default function AppBar() {

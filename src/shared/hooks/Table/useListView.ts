@@ -4,6 +4,7 @@ interface UseListViewProps<T> {
   data: T[];
   dateKey?: keyof T;
   itemsPerPage?: number;
+
 }
 
 export const useListView = <T extends Record<string, any>>({
@@ -43,7 +44,8 @@ export const useListView = <T extends Record<string, any>>({
     /* DATE FILTER */
     if (dateKey && (dateRange.start || dateRange.end)) {
       result = result.filter((item) => {
-        const itemDate = new Date(item[dateKey]);
+        const rawDate = item[dateKey];
+        const itemDate = new Date(rawDate as string | number | Date);
 
         if (dateRange.start && itemDate < dateRange.start) return false;
         if (dateRange.end && itemDate > dateRange.end) return false;

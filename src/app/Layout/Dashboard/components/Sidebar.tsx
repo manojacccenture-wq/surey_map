@@ -34,7 +34,8 @@ export default function Sidebar() {
               }`}
           >
             <img
-              src={SIDEBAR_ICONS[item.id]}
+                    src={SIDEBAR_ICONS[item.id as keyof typeof SIDEBAR_ICONS]}
+              // src={SIDEBAR_ICONS[item.id]}
               alt={item.label}
               className="w-5 h-5 object-contain"
             />

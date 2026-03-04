@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 import { fetchOverviewData } from "./overviewThunk";
 import SummaryCards from "./components/SummaryCards";
@@ -17,11 +17,12 @@ interface SurveyRow {
   name: string;
   userName: string;
   surveyCount: number;
+  createdAt: string;
 }
 
 const Overview = () => {
   const dispatch = useAppDispatch();
-  const { loading, data } = useAppSelector((state) => state.overview);
+  const { loading /* data */ } = useAppSelector((state) => state.overview);
 
   const hardcodedOverviewData = [
     {
@@ -111,24 +112,13 @@ const Overview = () => {
     }
   ];
 
-  const tableData: SurveyRow[] = [
-    { id: 1, name: "Manoj Kumar", userName: "Manoj", surveyCount: 120 },
-    { id: 2, name: "Rahul Sharma", userName: "Rahul", surveyCount: 95 },
-    { id: 3, name: "Amit Patel", userName: "Amit", surveyCount: 60 },
-    { id: 4, name: "Manoj Kumar", userName: "Manoj", surveyCount: 120 },
-    { id: 5, name: "Rahul Sharma", userName: "Rahul", surveyCount: 95 },
-    { id: 6, name: "Amit Patel", userName: "Amit", surveyCount: 60 },
-    { id: 7, name: "Manoj Kumar", userName: "Manoj", surveyCount: 120 },
-    { id: 8, name: "Rahul Sharma", userName: "Rahul", surveyCount: 95 },
-    { id: 9, name: "Amit Patel", userName: "Amit", surveyCount: 60 },
-    { id: 10, name: "Manoj Kumar", userName: "Manoj", surveyCount: 120 },
-    { id: 11, name: "Rahul Sharma", userName: "Rahul", surveyCount: 95 },
-    { id: 12, name: "Amit Patel", userName: "Amit", surveyCount: 60 },
-    { id: 13, name: "Manoj Kumar", userName: "Manoj", surveyCount: 120 },
-    { id: 14, name: "Rahul Sharma", userName: "Rahul", surveyCount: 95 },
-    { id: 15, name: "Amit Patel", userName: "Amit", surveyCount: 60 },
-  ];
-
+const tableData: SurveyRow[] = Array.from({ length: 15 }, (_, i) => ({
+  id: i + 1,
+  name: ["Manoj Kumar", "Rahul Sharma", "Amit Patel"][i % 3],
+  userName: ["Manoj", "Rahul", "Amit"][i % 3],
+  surveyCount: [120, 95, 60][i % 3],
+  createdAt: `2026-03-${String(i + 1).padStart(2, "0")}`,
+}));
   const columns: Column<SurveyRow>[] = [
     { key: "name", label: "Name" },
     { key: "userName", label: "User Name" },

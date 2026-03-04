@@ -10,6 +10,7 @@ interface RouteGuardProps {
   requirePublic?: boolean;
   requireMfa?: boolean;
   requireResetState?: boolean;
+  requiredPermission?: string;  
 }
 
 const RouteGuard = ({

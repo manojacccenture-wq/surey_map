@@ -51,10 +51,10 @@ const AppRouter = () => {
         <Route path="/dashboard" element={<RouteGuard requireAuth> <DashboardLayout /> </RouteGuard>}>
 
 
-          <Route path="registerUser" element={<RouteGuard requiredPermission={PERMISSIONS.MANAGE_USERS}> <RegisterUser /></RouteGuard>} />
+          <Route path="registerUser" element={<RouteGuard /* requiredPermission={PERMISSIONS.MANAGE_USERS} */> <RegisterUser /></RouteGuard>} />
           <Route index element={<RouteGuard requiredPermission={PERMISSIONS.VIEW_DASHBOARD}><Overview /></RouteGuard>} />
 
-           <Route path="toilets" element={<RouteGuard requiredPermission={PERMISSIONS.VIEW_TOILETS} ><SurveyList /></RouteGuard>} />
+           <Route path="surveyList" element={<RouteGuard requiredPermission={PERMISSIONS.VIEW_TOILETS} ><SurveyList /></RouteGuard>} />
 
           {/*<Route path="vendors" element={<RouteGuard requiredPermission={PERMISSIONS.MANAGE_VENDORS} > <Vendors /> </RouteGuard>} />
 

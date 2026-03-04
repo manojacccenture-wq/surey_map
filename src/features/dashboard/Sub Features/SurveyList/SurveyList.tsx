@@ -80,12 +80,17 @@ const SurveyList = () => {
             placeholder="Search survey..."
             value={quickSearch}
             onChange={(e) => {
-              setQuickSearch(e.target.value);
-              gridRef.current?.api.setQuickFilter(e.target.value);
+              const value = e.target.value;
+
+              setQuickSearch(value);
+
+              gridRef.current?.api.setGridOption(
+                "quickFilterText",
+                value
+              );
             }}
             className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-
           {/* Export */}
           <button
             onClick={exportToCSV}
