@@ -11,7 +11,7 @@ const API_ENDPOINTS = {
   REGISTER: "register",
   VERIFY_MFA: "verify-mfa",
   LOGOUT: "logout",
-  FORGOT_PASSWORD: "forgot-password",
+  FORGOT_PASSWORD: "/api/Account/ForgotPassword",
   RESET_PASSWORD: "reset-password",
 };
 
@@ -64,9 +64,20 @@ const authService = {
     return apiClient.post(API_ENDPOINTS.LOGOUT);
   },
 
-  requestPasswordReset: (identifier: string) => {
-    return apiClient.post(API_ENDPOINTS.FORGOT_PASSWORD, { identifier });
-  },
+requestPasswordReset: (identifier: string) => {
+  const formData = new URLSearchParams();
+  formData.append("Username", identifier);
+
+  return apiClient.post(
+    API_ENDPOINTS.FORGOT_PASSWORD,
+    formData,
+    {
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+    }
+  );
+},
 
   resetPassword: (data: ResetPasswordRequest) => {
     return apiClient.post(API_ENDPOINTS.RESET_PASSWORD, data);

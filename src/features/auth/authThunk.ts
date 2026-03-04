@@ -85,15 +85,15 @@ export const registerAsync = createAsyncThunk<
 
 
 export const verifyMfaAsync = createAsyncThunk<
-  void,
+  any, // replace with proper LoginResponse type later
   { username: string; password: string; otp: string },
   { rejectValue: string }
 >(
   "auth/verifyMfa",
   async (data, { rejectWithValue }) => {
     try {
-      await authService.verifyMfa(data);
-      return;
+      const response = await authService.verifyMfa(data);
+      return response.data; // ✅ RETURN DATA
     } catch (error: any) {
       return rejectWithValue(
         error.response?.data?.error_description || "OTP verification failed"
@@ -136,13 +136,16 @@ export const logoutAsync = createAsyncThunk<
 
 export const requestPasswordResetAsync = createAsyncThunk<
   string,
-  string,
+  RequestPasswordResetRequest,
   { rejectValue: string }
 >(
   "auth/requestPasswordReset",
-  async (username, { rejectWithValue }) => {
+  async (payload, { rejectWithValue }) => {
     try {
-      const response = await authService.requestPasswordReset(username);
+      const response = await authService.requestPasswordReset(
+        payload.identifier
+      );
+
 
       if (!response.data?.IsSuccessful) {
         return rejectWithValue(response.data?.Message || "Request failed");

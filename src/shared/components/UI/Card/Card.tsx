@@ -1,6 +1,14 @@
 import React from "react";
 
-const Card = ({
+interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  children: React.ReactNode;
+  className?: string;
+  shadow?: boolean;
+  padding?: string;
+  rounded?: string;
+}
+
+const Card: React.FC<CardProps> = ({
   children,
   className = "",
   shadow = true,

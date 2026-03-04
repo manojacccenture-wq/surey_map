@@ -85,8 +85,9 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(verifyMfaAsync.fulfilled, (state) => {
+      .addCase(verifyMfaAsync.fulfilled, (state,action:any) => {
         state.status = "succeeded";
+        state.user = action.payload; // 
         state.mfaPending = false;
         state.isAuthenticated = true;
         state.tempCredentials = null; // VERY IMPORTANT

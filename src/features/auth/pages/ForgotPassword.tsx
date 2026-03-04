@@ -14,27 +14,34 @@ import { requestPasswordResetAsync } from "@/features/auth/authThunk";
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 //  Username validation (ADM-001 format)
+// const forgotPasswordSchema = z.object({
+//   identifier: z
+//     .string()
+//     .min(1, "Username, email or phone is required")
+//     .refine(
+//       (value) => {
+//         const usernameRegex = /^[A-Z]{3}-\d{3}$/;
+//         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+//         const phoneRegex = /^(\+91[\s-]?)?[6-9]\d{9}$/;
+
+//         return (
+//           usernameRegex.test(value) ||
+//           emailRegex.test(value) ||
+//           phoneRegex.test(value)
+//         );
+//       },
+//       {
+//         message:
+//           "Enter valid Username (ADM-001), Email or Phone number",
+//       }
+//     ),
+// });
+
 const forgotPasswordSchema = z.object({
   identifier: z
     .string()
-    .min(1, "Username, email or phone is required")
-    .refine(
-      (value) => {
-        const usernameRegex = /^[A-Z]{3}-\d{3}$/;
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const phoneRegex = /^(\+91[\s-]?)?[6-9]\d{9}$/;
-
-        return (
-          usernameRegex.test(value) ||
-          emailRegex.test(value) ||
-          phoneRegex.test(value)
-        );
-      },
-      {
-        message:
-          "Enter valid Username (ADM-001), Email or Phone number",
-      }
-    ),
+    .min(1, "Username is required")
+    .trim(),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -102,7 +109,7 @@ const ForgotPassword: React.FC = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
             type="text"
-            placeholder="Enter username / email / phone"
+            placeholder="Enter username "
             error={!!errors.identifier}
             helperText={errors.identifier?.message}
             {...register("identifier")}

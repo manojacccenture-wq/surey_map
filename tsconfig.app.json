@@ -35,7 +35,8 @@
     "@/shared/*": ["shared/*"],
     "@/infrastructure/*": ["infrastructure/*"],
     "@/assets/*": ["assets/*"],
-    "@/styles/*": ["styles/*"]
+    "@/styles/*": ["styles/*"],
+      "@/utils/*": ["utils/*"]
 }
   },
   "include": [

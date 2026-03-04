@@ -23,7 +23,6 @@ const SignIn: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<SignInSchemaType>({
     resolver: zodResolver(signInSchema),
