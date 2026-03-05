@@ -5,6 +5,8 @@ import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import Button from "@/shared/components/UI/Button/Button";
+import Input from "@/shared/components/UI/Input/Input";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -66,7 +68,7 @@ const SurveyList = () => {
     <div className="w-full flex flex-col gap-4">
 
       {/* Toolbar */}
-      <div className="flex items-center justify-between bg-white p-4 rounded-lg shadow-sm border">
+      <div className="flex items-center justify-between bg-white p-4 rounded-lg ">
 
         <h2 className="text-lg font-semibold text-gray-700">
           Survey List
@@ -75,7 +77,7 @@ const SurveyList = () => {
         <div className="flex items-center gap-3">
 
           {/* Search */}
-          <input
+          <Input
             type="text"
             placeholder="Search survey..."
             value={quickSearch}
@@ -89,20 +91,20 @@ const SurveyList = () => {
                 value
               );
             }}
-            className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            // className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {/* Export */}
-          <button
+          <Button
             onClick={exportToCSV}
             className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
           >
             Export CSV
-          </button>
+          </Button>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="ag-theme-alpine w-full h-[70vh] rounded-lg overflow-hidden border">
+      <div className="ag-theme-alpine w-full h-[70vh] rounded-lg overflow-hidden p-2">
 
         <AgGridReact
           ref={gridRef}

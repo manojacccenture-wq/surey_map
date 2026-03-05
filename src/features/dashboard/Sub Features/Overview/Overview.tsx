@@ -10,6 +10,7 @@ import total_user from "@/assets/Images/Page_Image/Dashboard/User/Total_User.png
 import ListFilters from "@/shared/components/UI/ListFilters/ListFilters";
 import SearchFilter from "@/shared/components/UI/Filters/SearchFilter";
 import DateFilter from "@/shared/components/UI/Filters/DateFilter";
+import { overviewAdapter } from "@/features/dashboard/Sub Features/Overview/overview.adapter";
 
 
 interface SurveyRow {
@@ -22,7 +23,7 @@ interface SurveyRow {
 
 const Overview = () => {
   const dispatch = useAppDispatch();
-  const { loading /* data */ } = useAppSelector((state) => state.overview);
+  const { loading, data } = useAppSelector((state) => state.overview);
 
   const hardcodedOverviewData = [
     {
@@ -112,22 +113,23 @@ const Overview = () => {
     }
   ];
 
-const tableData: SurveyRow[] = Array.from({ length: 15 }, (_, i) => ({
-  id: i + 1,
-  name: ["Manoj Kumar", "Rahul Sharma", "Amit Patel"][i % 3],
-  userName: ["Manoj", "Rahul", "Amit"][i % 3],
-  surveyCount: [120, 95, 60][i % 3],
-  createdAt: `2026-03-${String(i + 1).padStart(2, "0")}`,
-}));
+// const tableData: SurveyRow[] = Array.from({ length: 15 }, (_, i) => ({
+//   id: i + 1,
+//   name: ["Manoj Kumar", "Rahul Sharma", "Amit Patel"][i % 3],
+//   userName: ["Manoj", "Rahul", "Amit"][i % 3],
+//   surveyCount: [120, 95, 60][i % 3],
+//   createdAt: `2026-03-${String(i + 1).padStart(2, "0")}`,
+// }));
   const columns: Column<SurveyRow>[] = [
     { key: "name", label: "Name" },
     { key: "userName", label: "User Name" },
     { key: "surveyCount", label: "Survey Count" },
   ];
 
+  const { cards, tableData } = overviewAdapter(data);
   const listView = useListView({
     data: tableData,
-    dateKey: "createdAt"
+    // dateKey: "createdAt"
   });
 
   useEffect(() => {
@@ -145,7 +147,8 @@ const tableData: SurveyRow[] = Array.from({ length: 15 }, (_, i) => ({
   return (
     <>
       <div className="w-full">
-        <SummaryCards cards={hardcodedOverviewData} />
+        <SummaryCards cards={cards} />
+        {/* <SummaryCards cards={hardcodedOverviewData} /> */}
       </div>
 
    <div className="mt-[1%] mb-[2%]">
