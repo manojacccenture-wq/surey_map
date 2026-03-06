@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import type { ColDef, GridReadyEvent } from "ag-grid-community";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
@@ -8,9 +8,26 @@ import "ag-grid-community/styles/ag-theme-alpine.css";
 import Button from "@/shared/components/UI/Button/Button";
 import Input from "@/shared/components/UI/Input/Input";
 
+
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
+import { fetchSurveyList } from "@/features/dashboard/Sub Features/SurveyList/surveyListThunk";
+import { surveyListAdapter } from "@/features/dashboard/Sub Features/SurveyList/adapter/surveyListAdapter";
+
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const SurveyList = () => {
+  const dispatch = useAppDispatch();
+
+  const { data, loading } = useAppSelector(
+    (state) => state.surveyList
+  );
+
+  useEffect(() => {
+    dispatch(fetchSurveyList());
+  }, [dispatch]);
+
+
   const gridRef = useRef<AgGridReact>(null);
   const [quickSearch, setQuickSearch] = useState("");
 
@@ -35,24 +52,9 @@ const SurveyList = () => {
     { headerName: "Cluster", field: "cluster" },
   ];
 
-  const rowData = [
-    {
-      serialNo: 1,
-      bpno: "BP001",
-      name: "Manoj",
-      mobile: "9999999999",
-      thana: "Bistupur",
-      vehicle: "Bike",
-      isActive: "Yes",
-      createdDate: "2026-02-27",
-      latitude: "22.804",
-      longitude: "86.202",
-      address: "Jamshedpur",
-      deptName: "Water",
-      serviceArea: "North",
-      cluster: "Cluster A",
-    },
-  ];
+
+
+const rowData = surveyListAdapter(data);
 
   const exportToCSV = () => {
     gridRef.current?.api.exportDataAsCsv({
@@ -91,7 +93,7 @@ const SurveyList = () => {
                 value
               );
             }}
-            // className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          // className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           {/* Export */}
           <Button
@@ -105,11 +107,11 @@ const SurveyList = () => {
 
       {/* Grid */}
       <div className="ag-theme-alpine w-full h-[70vh] rounded-lg overflow-hidden p-2">
-
         <AgGridReact
           ref={gridRef}
           rowData={rowData}
           columnDefs={columnDefs}
+          loading={loading}
           onGridReady={onGridReady}
           pagination
           paginationPageSize={15}

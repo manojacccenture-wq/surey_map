@@ -1,6 +1,33 @@
 import total_user from "@/assets/Images/Page_Image/Dashboard/User/Total_User.png";
 
-export const overviewAdapter = (apiData: any) => {
+interface SummaryItem {
+  name: string;
+  count: number;
+}
+
+interface SummaryCard {
+  label: string;
+  value?: number | string;
+  valueColor?: string;
+  iconBg?: string;
+  icon?: string;
+  items?: SummaryItem[];
+}
+
+export interface SurveyRow {
+  id: number;
+  name: string;
+  userName: string;
+  surveyCount: number;
+  createdAt: string;
+}
+
+interface OverviewAdapterResult {
+  cards: SummaryCard[];
+  tableData: SurveyRow[];
+}
+
+export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
   if (!apiData) {
     return {
       cards: [],
@@ -8,7 +35,7 @@ export const overviewAdapter = (apiData: any) => {
     };
   }
 
-  const cards = [
+  const cards: SummaryCard[] = [
     {
       label: "Completed",
       value: apiData.totalSurvey?.Data ?? 0,
@@ -16,7 +43,6 @@ export const overviewAdapter = (apiData: any) => {
       iconBg: "#6100FF",
       icon: total_user,
     },
-
     {
       label: "Survey Users",
       value: apiData.totalUsers?.Data ?? 0,
@@ -24,7 +50,6 @@ export const overviewAdapter = (apiData: any) => {
       iconBg: "#2ECC71",
       icon: total_user,
     },
-
     {
       label: "Surveys Today",
       value: apiData.todaySurvey?.Data ?? 0,
@@ -32,7 +57,6 @@ export const overviewAdapter = (apiData: any) => {
       iconBg: "#FFA800",
       icon: total_user,
     },
-
     {
       label: "Service Area",
       iconBg: "#2edede",
@@ -43,7 +67,6 @@ export const overviewAdapter = (apiData: any) => {
           count: item.TotalSurveyCount,
         })) ?? [],
     },
-
     {
       label: "Depot",
       iconBg: "#a32ede",
@@ -54,7 +77,6 @@ export const overviewAdapter = (apiData: any) => {
           count: item.TotalSurveyCount,
         })) ?? [],
     },
-
     {
       label: "Cluster",
       iconBg: "#2e31de",
@@ -65,7 +87,6 @@ export const overviewAdapter = (apiData: any) => {
           count: item.TotalSurveyCount,
         })) ?? [],
     },
-
     {
       label: "Thana",
       iconBg: "#2ec9de",
@@ -78,19 +99,13 @@ export const overviewAdapter = (apiData: any) => {
     },
   ];
 
-  /*
-  ============================
-  TABLE DATA ADAPTER
-  ============================
-  */
-
-  const tableData =
+  const tableData: SurveyRow[] =
     apiData.surveyByUsers?.Data?.map((item: any, index: number) => ({
       id: index + 1,
       name: item.Name,
       userName: item.UserName,
       surveyCount: item.TotalSurveyCount,
-      createdAt: new Date().toISOString(), // fallback
+      createdAt: new Date().toISOString(),
     })) ?? [];
 
   return {
