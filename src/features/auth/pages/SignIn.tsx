@@ -20,6 +20,8 @@ const SignIn: React.FC = () => {
   // Get auth state from Redux
   const { status, error, mfaPending, isAuthenticated } = useAppSelector((state) => state.auth);
 
+
+
   const {
     register,
     handleSubmit,
@@ -44,9 +46,9 @@ const SignIn: React.FC = () => {
       return;
     }
 
-    // if (isAuthenticated) {
-    //   navigate("/dashboard");
-    // }
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    }
   }, [mfaPending, isAuthenticated, navigate]);
 
 

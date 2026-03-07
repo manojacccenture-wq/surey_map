@@ -49,8 +49,17 @@ const authSlice = createSlice({
         state.status = "loading";
         state.error = null;
       })
-      .addCase(loginAsync.fulfilled, (state) => {
+      // .addCase(loginAsync.fulfilled, (state) => {
+      //   state.status = "succeeded";
+      // })
+      .addCase(loginAsync.fulfilled, (state, action: any) => {
+  
         state.status = "succeeded";
+
+        if (action.payload?.IsSuccessful) {
+          state.user = action.payload;
+          state.isAuthenticated = true;
+        }
       })
       .addCase(loginAsync.rejected, (state, action: any) => {
         state.status = "idle";
@@ -85,7 +94,7 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(verifyMfaAsync.fulfilled, (state,action:any) => {
+      .addCase(verifyMfaAsync.fulfilled, (state, action: any) => {
         state.status = "succeeded";
         state.user = action.payload; // 
         state.mfaPending = false;

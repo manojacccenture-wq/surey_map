@@ -24,16 +24,45 @@ import type { LoginRequest, RegisterRequest, RequestPasswordResetRequest, ResetP
 //   }
 // );
 
+// export const loginAsync = createAsyncThunk<
+//   any,
+//   LoginRequest,
+//   { rejectValue: { type: string; message?: string } }
+// >(
+//   "auth/login",
+//   async (credentials, { rejectWithValue }) => {
+//     try {
+//       await authService.login(credentials);
+//       return;
+//     } catch (error) {
+//       const err = error as AxiosError<any>;
+//       const apiError = err.response?.data;
+
+//       if (apiError?.error === "mfa_required") {
+//         return rejectWithValue({ type: "MFA_REQUIRED" });
+//       }
+
+//       return rejectWithValue({
+//         type: "GENERIC",
+//         message:
+//           apiError?.error_description || "Login failed",
+//       });
+//     }
+//   }
+// );
+
 export const loginAsync = createAsyncThunk<
-  void,
+  any,
   LoginRequest,
   { rejectValue: { type: string; message?: string } }
 >(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      await authService.login(credentials);
-      return;
+      const response = await authService.login(credentials);
+
+      return response.data;   // ✅ VERY IMPORTANT
+
     } catch (error) {
       const err = error as AxiosError<any>;
       const apiError = err.response?.data;
@@ -44,8 +73,7 @@ export const loginAsync = createAsyncThunk<
 
       return rejectWithValue({
         type: "GENERIC",
-        message:
-          apiError?.error_description || "Login failed",
+        message: apiError?.error_description || "Login failed",
       });
     }
   }
