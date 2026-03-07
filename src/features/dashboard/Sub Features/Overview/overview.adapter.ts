@@ -57,44 +57,52 @@ export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
       iconBg: "#FFA800",
       icon: total_user,
     },
+
+    // Service Area
     {
       label: "Service Area",
       iconBg: "#2edede",
       icon: total_user,
       items:
         apiData.serviceAreaWise?.Data?.map((item: any) => ({
-          name: item.Name,
-          count: item.TotalSurveyCount,
+          name: item.ServiceArea ?? item.Name,
+          count: item.TotalHouses ?? item.TotalSurveyCount,
         })) ?? [],
     },
+
+    // Depot
     {
       label: "Depot",
       iconBg: "#a32ede",
       icon: total_user,
       items:
         apiData.depotWise?.Data?.map((item: any) => ({
-          name: item.Name,
-          count: item.TotalSurveyCount,
+          name: item.Depo ?? item.Name,
+          count: item.TotalHouses ?? item.TotalSurveyCount,
         })) ?? [],
     },
+
+    // Cluster
     {
       label: "Cluster",
       iconBg: "#2e31de",
       icon: total_user,
       items:
         apiData.clusterWise?.Data?.map((item: any) => ({
-          name: item.Name,
-          count: item.TotalSurveyCount,
+          name: item.Cluster ?? item.Name,
+          count: item.TotalHouses ?? item.TotalSurveyCount,
         })) ?? [],
     },
+
+    // Thana
     {
       label: "Thana",
       iconBg: "#2ec9de",
       icon: total_user,
       items:
         apiData.thanaWise?.Data?.map((item: any) => ({
-          name: item.Name,
-          count: item.TotalSurveyCount,
+          name: item.Thana ?? item.Name,
+          count: item.TotalHouses ?? item.TotalSurveyCount,
         })) ?? [],
     },
   ];

@@ -60,9 +60,11 @@ const SummaryCards: React.FC<SummaryCardsProps> = ({ cards = [] }) => {
               </div>
 
               {/* Main Value */}
-              <p className="text-2xl font-bold tracking-tight text-left">
-                {card.value}
-              </p>
+              {card.value !== undefined && (
+                <p className="text-2xl font-bold tracking-tight text-left">
+                  {card.value}
+                </p>
+              )}
 
               {/* Scrollable Items */}
               {card.items && (
