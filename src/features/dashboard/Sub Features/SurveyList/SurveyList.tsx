@@ -27,34 +27,66 @@ const SurveyList = () => {
     dispatch(fetchSurveyList());
   }, [dispatch]);
 
+  
+  
+
 
   const gridRef = useRef<AgGridReact>(null);
   const [quickSearch, setQuickSearch] = useState("");
 
-  const columnDefs: ColDef[] = [
-    { headerName: "Serial No", field: "serialNo", maxWidth: 120 },
-    { headerName: "BPNO", field: "bpno" },
-    { headerName: "Name", field: "name" },
-    { headerName: "Mobile", field: "mobile" },
-    { headerName: "Thana", field: "thana" },
-    { headerName: "Vehicle", field: "vehicle" },
-    { headerName: "Is Active", field: "isActive" },
-    {
-      headerName: "Created Date",
-      field: "createdDate",
-      filter: "agDateColumnFilter",
-    },
-    { headerName: "Latitude", field: "latitude" },
-    { headerName: "Longitude", field: "longitude" },
-    { headerName: "Address", field: "address" },
-    { headerName: "Dept Name", field: "deptName" },
-    { headerName: "Service Area", field: "serviceArea" },
-    { headerName: "Cluster", field: "cluster" },
-  ];
+const columnDefs: ColDef[] = [
+  { headerName: "Serial No", field: "serialNo", maxWidth: 110 },
+  { headerName: "Id", field: "Id" },
 
+  { headerName: "BP No", field: "BPNo" },
+  { headerName: "Name", field: "Name" },
+  { headerName: "Mobile No", field: "MobileNo" },
+  { headerName: "Thana", field: "Thana" },
+
+  { headerName: "Road Type", field: "RoadType" },
+  { headerName: "Vehicle Can Run", field: "VehicleCanRun" },
+  { headerName: "House Type", field: "HouseType" },
+
+  { headerName: "Survey Floor Mapping Id", field: "SurveyFloorMappingId" },
+  { headerName: "Image Path", field: "ImagePath" },
+  { headerName: "Attachment Id", field: "AttachmentId" },
+
+  { headerName: "Latitude", field: "Latitude" },
+  { headerName: "Longitude", field: "Longitude" },
+
+  { headerName: "Created By", field: "CreatedBy" },
+  { headerName: "Created Date", field: "CreatedDate" },
+
+  { headerName: "Updated By", field: "UpdatedBy" },
+  { headerName: "Updated Date", field: "UpdatedDate" },
+
+  { headerName: "Is Active", field: "IsActive" },
+
+  { headerName: "Person Detail Id", field: "PersonDetailId" },
+
+  { headerName: "Address", field: "Address" },
+
+  { headerName: "Has BP No", field: "HasBPNo" },
+
+  { headerName: "UBDT Latitude", field: "UbdtLatitude" },
+  { headerName: "UBDT Longitude", field: "UbdtLongitude" },
+
+  { headerName: "Depo", field: "Depo" },
+  { headerName: "Service Area", field: "ServiceArea" },
+
+  { headerName: "Not Available Reason", field: "notAvailableReason" },
+
+  { headerName: "Cluster", field: "cluster" },
+
+  { headerName: "Is Not Available", field: "isNotAvailable" },
+
+  { headerName: "Floor Subtype Count", field: "FloorSubtypeCount" },
+];
 
 
 const rowData = surveyListAdapter(data);
+
+
 
   const exportToCSV = () => {
     gridRef.current?.api.exportDataAsCsv({
