@@ -11,6 +11,8 @@ import SearchFilter from "@/shared/components/UI/Filters/SearchFilter";
 import DateFilter from "@/shared/components/UI/Filters/DateFilter";
 import { overviewAdapter } from "@/features/dashboard/Sub Features/Overview/overview.adapter";
 
+// import { mockOverviewData } from "@/utils/mockOverviewData";
+
 
 interface SurveyRow {
   id: number;
@@ -27,13 +29,18 @@ const Overview = () => {
 
   const columns: Column<SurveyRow>[] = [
     { key: "name", label: "Name" },
-    { key: "userName", label: "User Name" },
+    // { key: "userName", label: "User Name" },
     { key: "surveyCount", label: "Survey Count" },
   ];
 
   const { cards, tableData } = overviewAdapter(data);
+
+  // const { cards, tableData } = overviewAdapter(mockOverviewData);
+
   const listView = useListView({
+
     data: tableData,
+      itemsPerPage: 20
     // dateKey: "createdAt"
   });
 
@@ -41,11 +48,12 @@ const Overview = () => {
     dispatch(fetchOverviewData());
   }, [dispatch]);
 
+  const leftTableData = listView.paginatedData.slice(0, 10);
+  const rightTableData = listView.paginatedData.slice(10, 20);
 
 
 
 
-  
 
 
 
@@ -56,40 +64,52 @@ const Overview = () => {
         {/* <SummaryCards cards={hardcodedOverviewData} /> */}
       </div>
 
-   <div className="mt-[1%] mb-[2%]">
+      <div className="mt-[1%] mb-[2%]">
 
-  <ListFilters
-    title="All Users"
-    totalCount={listView.totalCount}
-  >
+        <ListFilters
+          title="All Users"
+          totalCount={listView.totalCount}
+        >
 
-    <SearchFilter
-      value={listView.searchTerm}
-      onChange={listView.setSearchTerm}
-      placeholder="Search user"
-    />
+          <SearchFilter
+            value={listView.searchTerm}
+            onChange={listView.setSearchTerm}
+            placeholder="Search user"
+          />
 
-    <DateFilter
-      onChange={listView.setDateRange}
-    />
+          <DateFilter
+            onChange={listView.setDateRange}
+          />
 
-  </ListFilters>
+        </ListFilters>
 
-</div>
+      </div>
 
       {/* TABLE */}
-      <Table<SurveyRow>
-        columns={columns}
-        data={listView.paginatedData}
-        loading={loading}
-        emptyMessage="No survey data found"
-      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+        <Table<SurveyRow>
+          columns={columns}
+          data={leftTableData}
+          loading={loading}
+          emptyMessage="No survey data"
+        />
+
+        <Table<SurveyRow>
+          columns={columns}
+          data={rightTableData}
+          loading={loading}
+          emptyMessage="No survey data"
+        />
+
+      </div>
 
       {/* PAGINATION */}
       <Pagination
         currentPage={listView.currentPage}
         totalPages={listView.totalPages}
         onPageChange={listView.setCurrentPage}
+        
         itemsPerPage={listView.itemsPerPage}
         totalCount={listView.totalCount}
       />

@@ -12,7 +12,7 @@ import DashboardLayout from "@/app/Layout/Dashboard/DashboardLayout";
 const SignIn = lazy(() => import("@/features/auth/pages/SignIn"));
 const SignUp = lazy(() => import("@/features/auth/pages/SignUp"));
 const ForgotPassword = lazy(() => import("@/features/auth/pages/ForgotPassword"));
-// const ResetPassword = lazy(() => import("../features/auth/pages/ResetPassword"));
+const ResetPassword = lazy(() => import("@/features/auth/pages/ResetPassword"));
 const MFA = lazy(() => import("@/features/auth/pages/MFA"));
 
 // // Dashboard
@@ -70,7 +70,7 @@ const AppRouter = () => {
 
         {/* Reset Password */}
 
-        {/* <Route path="/reset-password" element={<RouteGuard requireResetState> <ResetPassword /> </RouteGuard>} /> */}
+        <Route path="/reset-password" element={<RouteGuard requireResetState> <ResetPassword /> </RouteGuard>} />
 
         {/* Access Denied */}
 

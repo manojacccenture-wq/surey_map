@@ -36,7 +36,7 @@ const SurveyList = () => {
 
 const columnDefs: ColDef[] = [
   { headerName: "Serial No", field: "serialNo", maxWidth: 110 },
-  { headerName: "Id", field: "Id" },
+  // { headerName: "Id", field: "Id" },
 
   { headerName: "BP No", field: "BPNo" },
   { headerName: "Name", field: "Name" },
@@ -57,12 +57,12 @@ const columnDefs: ColDef[] = [
   { headerName: "Created By", field: "CreatedBy" },
   { headerName: "Created Date", field: "CreatedDate" },
 
-  { headerName: "Updated By", field: "UpdatedBy" },
-  { headerName: "Updated Date", field: "UpdatedDate" },
+  // { headerName: "Updated By", field: "UpdatedBy" },
+  // { headerName: "Updated Date", field: "UpdatedDate" },
 
-  { headerName: "Is Active", field: "IsActive" },
+  // { headerName: "Is Active", field: "IsActive" },
 
-  { headerName: "Person Detail Id", field: "PersonDetailId" },
+  // { headerName: "Person Detail Id", field: "PersonDetailId" },
 
   { headerName: "Address", field: "Address" },
 
@@ -105,7 +105,7 @@ const rowData = surveyListAdapter(data);
       <div className="flex items-center justify-between bg-white p-4 rounded-lg ">
 
         <h2 className="text-lg font-semibold text-gray-700">
-          Survey List
+
         </h2>
 
         <div className="flex items-center gap-3">
@@ -146,7 +146,7 @@ const rowData = surveyListAdapter(data);
           loading={loading}
           onGridReady={onGridReady}
           pagination
-          paginationPageSize={15}
+          paginationPageSize={25}
           paginationPageSizeSelector={[10, 15, 25, 50]}
           animateRows
           defaultColDef={{

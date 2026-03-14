@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     dispatch(restoreSessionAsync());
-  }, []);
+  }, [dispatch]);
 
 
   return (

@@ -1,4 +1,10 @@
-import total_user from "@/assets/Images/Page_Image/Dashboard/User/Total_User.png";
+import checked from "@/assets/Images/Page_Image/Dashboard/User/checked.png";
+import survey from "@/assets/Images/Page_Image/Dashboard/User/survey.png";
+import support from "@/assets/Images/Page_Image/Dashboard/User/support.png";
+import surveyor from "@/assets/Images/Page_Image/Dashboard/User/surveyor.png";
+import warehouse from "@/assets/Images/Page_Image/Dashboard/User/warehouse.png";
+import networking from "@/assets/Images/Page_Image/Dashboard/User/networking.png";
+import policeStation from "@/assets/Images/Page_Image/Dashboard/User/police-station.png";
 
 interface SummaryItem {
   name: string;
@@ -40,29 +46,29 @@ export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
       label: "Completed",
       value: apiData.totalSurvey?.Data ?? 0,
       valueColor: "#6100FF",
-      iconBg: "#6100FF",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: checked,
     },
     {
       label: "Survey Users",
       value: apiData.totalUsers?.Data ?? 0,
       valueColor: "#2ECC71",
-      iconBg: "#2ECC71",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: surveyor,
     },
     {
       label: "Surveys Today",
       value: apiData.todaySurvey?.Data ?? 0,
       valueColor: "#FFA800",
-      iconBg: "#FFA800",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: survey,
     },
 
     // Service Area
     {
       label: "Service Area",
-      iconBg: "#2edede",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: support,
       items:
         apiData.serviceAreaWise?.Data?.map((item: any) => ({
           name: item.ServiceArea ?? item.Name,
@@ -73,8 +79,8 @@ export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
     // Depot
     {
       label: "Depot",
-      iconBg: "#a32ede",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: warehouse,
       items:
         apiData.depotWise?.Data?.map((item: any) => ({
           name: item.Depo ?? item.Name,
@@ -85,8 +91,8 @@ export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
     // Cluster
     {
       label: "Cluster",
-      iconBg: "#2e31de",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: networking,
       items:
         apiData.clusterWise?.Data?.map((item: any) => ({
           name: item.Cluster ?? item.Name,
@@ -97,8 +103,8 @@ export const overviewAdapter = (apiData: any): OverviewAdapterResult => {
     // Thana
     {
       label: "Thana",
-      iconBg: "#2ec9de",
-      icon: total_user,
+      iconBg: "#EDEADE",
+      icon: policeStation,
       items:
         apiData.thanaWise?.Data?.map((item: any) => ({
           name: item.Thana ?? item.Name,

@@ -40,8 +40,10 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 const forgotPasswordSchema = z.object({
   identifier: z
     .string()
-    .min(1, "Username is required")
-    .trim(),
+    .trim()
+    .toLowerCase()
+    .min(1, { message: "Email is required" })
+    .pipe(z.email({ message: "Enter a valid email address" })),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -56,11 +58,10 @@ const ForgotPassword: React.FC = () => {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<ForgotPasswordFormData>({
     resolver: zodResolver(forgotPasswordSchema),
-    mode: "onTouched",
+    mode: "onChange",
     defaultValues: {
       identifier: "",
     },
@@ -97,7 +98,7 @@ const ForgotPassword: React.FC = () => {
         </h2>
 
         <p className="text-center text-sm text-gray-500 mb-6">
-          Enter your username to reset your password
+          Enter your email to reset your password
         </p>
 
         {error && (
@@ -108,14 +109,11 @@ const ForgotPassword: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            type="text"
-            placeholder="Enter username "
+            type="email"
+            placeholder="youremail@xyz.com"
             error={!!errors.identifier}
             helperText={errors.identifier?.message}
             {...register("identifier")}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              setValue("identifier", e.target.value.toUpperCase())
-            }
             disabled={isLoading}
           />
 

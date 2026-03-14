@@ -64,7 +64,7 @@ function Table<T extends { id?: string | number }>({
                   Loading...
                 </td>
               </tr>
-            ) : data.length === 0 ? (
+            ) : data?.length === 0 ? (
               <tr>
                 <td
                   colSpan={columns.length + (actions ? 1 : 0)}
@@ -74,7 +74,7 @@ function Table<T extends { id?: string | number }>({
                 </td>
               </tr>
             ) : (
-              data.map((row, rowIndex) => (
+              data?.map((row, rowIndex) => (
                 <tr
                   key={row.id ?? rowIndex}
                   onClick={() => onRowClick?.(row, rowIndex)}
