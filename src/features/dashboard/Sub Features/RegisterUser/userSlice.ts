@@ -1,7 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchUsers } from "@/features/dashboard/Sub Features/RegisterUser/usersThunks";
 
-const initialState = {
+interface UsersState {
+  users: any[];
+  loading: boolean;
+  error: string | null;
+}
+
+const initialState: UsersState = {
   users: [],
   loading: false,
   error: null
@@ -27,7 +33,7 @@ const userSlice = createSlice({
 
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.payload as string;
       });
 
   }

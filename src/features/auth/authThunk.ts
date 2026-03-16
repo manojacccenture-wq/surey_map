@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import authService from '@/features/auth/api/authApi';
 import type { AxiosError } from "axios";
-import type { LoginRequest, RegisterRequest, RequestPasswordResetRequest, ResetPasswordRequest } from '@/features/auth/api/auth.types';
+import type { LoginRequest, RegisterRequest, /* RequestPasswordResetRequest, */ ResetPasswordRequest } from '@/features/auth/api/auth.types';
 
 
 

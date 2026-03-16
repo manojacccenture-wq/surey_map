@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { getUsersService } from "@/features/dashboard/Sub Features/RegisterUser/services/registerUser.service";
+import type { AxiosError } from "axios";
 
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
@@ -16,8 +17,10 @@ export const fetchUsers = createAsyncThunk(
 
     } catch (error) {
 
+      const err = error as AxiosError<any>;
+
       return rejectWithValue(
-        error?.response?.data?.message || "Failed to fetch users"
+        err.response?.data?.message || "Failed to fetch users"
       );
 
     }
