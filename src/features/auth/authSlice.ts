@@ -53,7 +53,7 @@ const authSlice = createSlice({
       //   state.status = "succeeded";
       // })
       .addCase(loginAsync.fulfilled, (state, action: any) => {
-  
+
         state.status = "succeeded";
 
         if (action.payload?.IsSuccessful) {
@@ -129,9 +129,16 @@ const authSlice = createSlice({
         state.status = 'loading';
         state.error = null;
       })
-      .addCase(requestPasswordResetAsync.fulfilled, (state, action) => {
-        state.status = 'pending';
-        state.resetPasswordEmail = action.meta.arg.identifier; //  FIXED
+
+      .addCase(requestPasswordResetAsync.fulfilled, (state, action: any) => {
+        if (action.payload?.IsSuccessful) {
+          state.status = "pending";
+          state.resetPasswordEmail = action.meta.arg.identifier;
+          state.error = null;
+        } else {
+          state.status = "failed";
+          state.error = action.payload?.Message || "Failed to send reset email";
+        }
       })
       .addCase(requestPasswordResetAsync.rejected, (state, action: any) => {
         state.status = 'failed';

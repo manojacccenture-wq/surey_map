@@ -83,7 +83,6 @@ const SignUp: React.FC = () => {
         })
       ).unwrap();
     } catch (err) {
-      console.error("Registration failed:", err);
     }
   };
 

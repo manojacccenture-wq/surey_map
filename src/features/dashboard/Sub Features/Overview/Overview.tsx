@@ -11,7 +11,7 @@ import SearchFilter from "@/shared/components/UI/Filters/SearchFilter";
 import DateFilter from "@/shared/components/UI/Filters/DateFilter";
 import { overviewAdapter } from "@/features/dashboard/Sub Features/Overview/overview.adapter";
 
-// import { mockOverviewData } from "@/utils/mockOverviewData";
+import { mockOverviewData } from "@/utils/mockOverviewData";
 
 
 interface SurveyRow {
@@ -33,9 +33,9 @@ const Overview = () => {
     { key: "surveyCount", label: "Survey Count" },
   ];
 
-  const { cards, tableData } = overviewAdapter(data);
+  // const { cards, tableData } = overviewAdapter(data);
 
-  // const { cards, tableData } = overviewAdapter(mockOverviewData);
+  const { cards, tableData } = overviewAdapter(mockOverviewData);
 
   const listView = useListView({
 

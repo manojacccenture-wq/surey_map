@@ -37,13 +37,20 @@ import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 //     ),
 // });
 
+// const forgotPasswordSchema = z.object({
+//   identifier: z
+//     .string()
+//     .trim()
+//     .toLowerCase()
+//     .min(1, { message: "Email is required" })
+//     .pipe(z.email({ message: "Enter a valid email address" })),
+// });
+
 const forgotPasswordSchema = z.object({
   identifier: z
     .string()
     .trim()
-    .toLowerCase()
-    .min(1, { message: "Email is required" })
-    .pipe(z.email({ message: "Enter a valid email address" })),
+    .min(5, { message: "Username must be at least 5 characters" }),
 });
 
 type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
@@ -86,7 +93,6 @@ const ForgotPassword: React.FC = () => {
     try {
       dispatch(requestPasswordResetAsync({ identifier: value })).unwrap();
     } catch (err) {
-      console.error("Password reset request failed:", err);
     }
   };
 
@@ -98,7 +104,7 @@ const ForgotPassword: React.FC = () => {
         </h2>
 
         <p className="text-center text-sm text-gray-500 mb-6">
-          Enter your email to reset your password
+          Enter your username to reset your password
         </p>
 
         {error && (
@@ -109,8 +115,8 @@ const ForgotPassword: React.FC = () => {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <Input
-            type="email"
-            placeholder="youremail@xyz.com"
+            type="text"
+            placeholder="Enter the username"
             error={!!errors.identifier}
             helperText={errors.identifier?.message}
             {...register("identifier")}

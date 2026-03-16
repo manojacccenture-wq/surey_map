@@ -10,7 +10,7 @@ const API_ENDPOINTS = {
   ME:"me",
   REGISTER: "register",
   VERIFY_MFA: "verify-mfa",
-  LOGOUT: "logout",
+  LOGOUT: "/api/Account/Logout",
   FORGOT_PASSWORD: "/api/Account/ForgotPassword",
   RESET_PASSWORD: "reset-password",
 };

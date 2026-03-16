@@ -1,20 +1,23 @@
 import { useState, useEffect } from "react";
-
 import Button from "@/shared/components/UI/Button/Button";
-
 import AddUserModal from "@/features/dashboard/Sub Features/RegisterUser/components/AddUserModal";
 import UsersTable from "@/features/dashboard/Sub Features/RegisterUser/components/UsersTable";
-
 import { useRegisterUser } from "@/features/dashboard/Sub Features/RegisterUser/hooks/useRegisterUser";
+import { fetchUsers } from "@/features/dashboard/Sub Features/RegisterUser/usersThunks";
+import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
-import { getUserService } from "@/features/dashboard/Sub Features/RegisterUser/services/registerUser.service";
+// import { getUserService } from "@/features/dashboard/Sub Features/RegisterUser/services/registerUser.service";
 
 const RegisterUser = () => {
 
+  const { users, loading } = useAppSelector((state: any) => state.users);
+
+
+  const dispatch = useAppDispatch();
 
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [users, setUsers] = useState([]);
+
 
   const { registerUser } = useRegisterUser();
 
@@ -25,24 +28,17 @@ const RegisterUser = () => {
     if (result.success) {
 
       setModalOpen(false);
+      dispatch(fetchUsers());
 
     }
 
   };
-
   useEffect(() => {
 
-    const fetchUsers = async () => {
-      const result = await getUserService();
+    dispatch(fetchUsers());
 
-      if (result.success) {
-        setUsers(result.data);
-      }
-    };
+  }, [dispatch]);
 
-    fetchUsers();
-
-  }, []);
 
   return (
     <div className="flex flex-col gap-6">
@@ -59,7 +55,7 @@ const RegisterUser = () => {
 
       </div>
 
-      <UsersTable users={users} />
+      <UsersTable users={users} loading={loading} />
 
       <AddUserModal
         isOpen={modalOpen}

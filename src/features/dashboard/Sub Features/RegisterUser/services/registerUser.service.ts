@@ -23,24 +23,21 @@ export const registerUserService = async (data: RegisterUserForm) => {
 
 };
 
-export const getUserService = async () => {
-
+export const getUsersService = async () => {
   try {
-
-    const response = await getUsersApi();
+    const res = await getUsersApi();
 
     return {
       success: true,
-      data: response
+      data: res.Data
     };
 
   } catch (error) {
 
     return {
       success: false,
-      message: "User registration failed"
+      data: []
     };
 
   }
-
 };

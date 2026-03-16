@@ -44,11 +44,11 @@ export const menuConfig = [
   //   path: '/dashboard/support',
   //   permission: PERMISSIONS.VIEW_SUPPORT,
   // },
-  // {
-  //   id: 'logout',
-  //   label: 'Log Out',
-  //   path: '/logout',
-  //    permission: PERMISSIONS.PUBLIC,
+  {
+    id: 'logout',
+    label: 'Log Out',
+    path: '/logout',
+     permission: PERMISSIONS.PUBLIC,
 
-  // },
+  },
 ];

@@ -146,8 +146,8 @@ const rowData = surveyListAdapter(data);
           loading={loading}
           onGridReady={onGridReady}
           pagination
-          paginationPageSize={25}
-          paginationPageSizeSelector={[10, 15, 25, 50]}
+          paginationPageSize={30}
+          paginationPageSizeSelector={[10, 15, 30,50]}
           animateRows
           defaultColDef={{
             sortable: true,

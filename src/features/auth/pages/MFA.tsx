@@ -67,7 +67,6 @@ const MFA: React.FC = () => {
     dispatch(clearError());
 
     if (!tempCredentials) {
-      console.error("Missing temporary credentials");
       navigate("/");
       return;
     }

@@ -13,6 +13,6 @@ export const registerUserApi = async (data: RegisterUserForm) => {
 };
 
 export const getUsersApi = async () => {
-  const res = await apiClient(`${BASE}/fetchUsers`);
+  const res = await apiClient(`${BASE}GetUserList`);
   return res.data;
 };

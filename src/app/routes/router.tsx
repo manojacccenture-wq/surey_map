@@ -22,6 +22,7 @@ import Overview from "@/features/dashboard/Sub Features/Overview/Overview";
 // const Feedback = lazy(() => import("../features/dashboard/Sub Features/Feedback/Feedback"));
 import RegisterUser from "@/features/dashboard/Sub Features/RegisterUser/RegisterUser";
 import SurveyList from "@/features/dashboard/Sub Features/SurveyList/SurveyList";
+import Logout from "@/features/dashboard/Public Features/Logout/Logout";
 // const Roles = lazy(() => import("../features/dashboard/Sub Features/Roles/Roles"));
 // const Support = lazy(() => import("../features/dashboard/Sub Features/Support/Support"));
 
@@ -78,7 +79,7 @@ const AppRouter = () => {
 
         {/* Log Out */}
 
-        {/* <Route path="logout" element={<RouteGuard requireAuth > <Logout /> </RouteGuard>} /> */}
+        <Route path="logout" element={<RouteGuard requireAuth > <Logout /> </RouteGuard>} />
 
       </Routes >
     </Suspense >

@@ -2,22 +2,32 @@ import React from "react";
 import Table, { type Column } from "@/shared/components/UI/Table/Table";
 
 interface User {
-  id: number;
+  id: string;
   name: string;
   email: string;
-  phone: string;
+  phone: string | null;
 }
 
 interface Props {
-  users: User[];
+  users: any[];
+  loading: boolean;
+
 }
 
 const UsersTable: React.FC<Props> = ({ users }) => {
 
+  const tableData: User[] = users.map((u) => ({
+    id: u.Id,
+    name: u.Name,
+    email: u.Email,
+    phone: u.PhoneNumber
+  }));
+
   const columns: Column<User>[] = [
     {
       key: "id",
-      label: "Sl.no"
+      label: "Sl.no",
+      render: (_value, _row, index) => index + 1
     },
     {
       key: "name",
@@ -29,14 +39,15 @@ const UsersTable: React.FC<Props> = ({ users }) => {
     },
     {
       key: "phone",
-      label: "Phone"
+      label: "Phone",
+      render: (value) => value ?? "-"
     }
   ];
 
   return (
     <Table<User>
       columns={columns}
-      data={users}
+      data={tableData}
     />
   );
 };

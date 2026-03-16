@@ -150,6 +150,17 @@ export const logoutAsync = createAsyncThunk<
   }
 );
 
+// export const logoutAsync = createAsyncThunk<
+//   { success: boolean },
+//   void,
+//   { rejectValue: string }
+// >(
+//   "auth/logout",
+//   async () => {
+//     return { success: true }; // always success
+//   }
+// );
+
 // export const requestPasswordResetAsync = createAsyncThunk(
 //   'auth/requestPasswordReset',
 //   async (identifier, { rejectWithValue }) => {
@@ -162,28 +173,14 @@ export const logoutAsync = createAsyncThunk<
 //   }
 // );
 
-export const requestPasswordResetAsync = createAsyncThunk<
-  string,
-  RequestPasswordResetRequest,
-  { rejectValue: string }
->(
+export const requestPasswordResetAsync = createAsyncThunk(
   "auth/requestPasswordReset",
-  async (payload, { rejectWithValue }) => {
+  async ({ identifier }: { identifier: string }, { rejectWithValue }) => {
     try {
-      const response = await authService.requestPasswordReset(
-        payload.identifier
-      );
-
-
-      if (!response.data?.IsSuccessful) {
-        return rejectWithValue(response.data?.Message || "Request failed");
-      }
-
-      return response.data.Message;
+      const response = await authService.requestPasswordReset(identifier);
+      return response.data; // IMPORTANT
     } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.Message || "Server error"
-      );
+      return rejectWithValue(error.response?.data || "Something went wrong");
     }
   }
 );

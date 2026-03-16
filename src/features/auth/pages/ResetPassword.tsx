@@ -60,7 +60,6 @@ const ResetPassword: React.FC = () => {
     dispatch(clearError());
 
     if (!email) {
-      console.error("No email found for password reset");
       return;
     }
 
@@ -72,7 +71,6 @@ const ResetPassword: React.FC = () => {
         })
       ).unwrap();
     } catch (err) {
-      console.error("Password reset failed:", err);
     }
   };
 

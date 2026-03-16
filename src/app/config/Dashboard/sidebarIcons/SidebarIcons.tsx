@@ -15,7 +15,7 @@ export const SIDEBAR_ICONS = {
   users: userManagement,
   // roles: roleBasedAccess,
   // support: helpAndSupport,
-  // logout: logOut,
+  logout: logOut,
 };
 
 

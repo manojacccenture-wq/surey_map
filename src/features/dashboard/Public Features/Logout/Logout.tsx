@@ -12,7 +12,6 @@ const Logout: React.FC = () => {
       try {
         await dispatch(logoutAsync()).unwrap();
       } catch (err) {
-        console.error("Logout failed:", err);
       } finally {
         navigate("/", { replace: true });
       }
