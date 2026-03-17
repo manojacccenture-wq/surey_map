@@ -19,13 +19,20 @@ export interface RegisterRequest {
   marketingConsent: boolean;
 }
 
-export interface ResetPasswordRequest {
-  email: string;
-  newPassword: string;
-}
+// export interface ResetPasswordRequest {
+//   email: string;
+//   newPassword: string;
+// }
 
 
 export interface RequestPasswordResetRequest {
   identifier: string;
 }
 
+
+export interface ResetPasswordRequest {
+  username: string;
+  password: string;
+  confirmPassword: string;
+  code: string;
+}

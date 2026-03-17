@@ -12,7 +12,7 @@ export const registerUserSchema = z.object({
 
   phone: z
     .string()
-    .min(10, "Phone must be 10 digits"),
+    .regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
 
   username: z
     .string()
@@ -22,9 +22,12 @@ export const registerUserSchema = z.object({
     .string()
     .min(3, "User code required"),
 
-  password: z
-    .string()
-    .min(6, "Password must be 6 characters"),
+password: z
+  .string()
+  .min(8, "Password must be at least 8 characters")
+  .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+  .regex(/[a-z]/, "Must contain at least one lowercase letter")
+  .regex(/[0-9]/, "Must contain at least one number"),
 
   confirmPassword: z
     .string()

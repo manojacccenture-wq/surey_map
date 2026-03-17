@@ -7,12 +7,12 @@ import type { LoginRequest } from "@/features/auth/api/auth.types";
 
 const API_ENDPOINTS = {
   LOGIN: "token",
-  ME:"me",
+  ME: "me",
   REGISTER: "register",
   VERIFY_MFA: "verify-mfa",
   LOGOUT: "/api/Account/Logout",
   FORGOT_PASSWORD: "/api/Account/ForgotPassword",
-  RESET_PASSWORD: "reset-password",
+  RESET_PASSWORD: "/api/Account/CustomResetPassword",
 };
 
 
@@ -64,23 +64,41 @@ const authService = {
     return apiClient.post(API_ENDPOINTS.LOGOUT);
   },
 
-requestPasswordReset: (identifier: string) => {
-  const formData = new URLSearchParams();
-  formData.append("Username", identifier);
+  // requestPasswordReset: (identifier: string) => {
+  //   const formData = new URLSearchParams();
+  //   formData.append("Username", identifier);
 
-  return apiClient.post(
-    API_ENDPOINTS.FORGOT_PASSWORD,
-    formData,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-    }
-  );
-},
+  //   return apiClient.post(
+  //     API_ENDPOINTS.FORGOT_PASSWORD,
+  //     formData,
+  //     {
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //     }
+  //   );
+  // },
+  requestPasswordReset: (identifier: string) => {
+    return apiClient.post(
+      API_ENDPOINTS.FORGOT_PASSWORD,
+      {
+        username: identifier, // match backend exactly
+      }
+    );
+  },
 
-  resetPassword: (data: ResetPasswordRequest) => {
-    return apiClient.post(API_ENDPOINTS.RESET_PASSWORD, data);
+  resetPassword: (data: {
+    username: string;
+    password: string;
+    confirmPassword: string;
+    code: string;
+  }) => {
+    return apiClient.post(API_ENDPOINTS.RESET_PASSWORD, {
+      Username: data.username,
+      Password: data.password,
+      ConfirmPassword: data.confirmPassword,
+      Code: data.code,
+    });
   },
 
   getMe: () => {

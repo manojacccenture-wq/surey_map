@@ -4,6 +4,7 @@ import AddUserModal from "@/features/dashboard/Sub Features/RegisterUser/compone
 import UsersTable from "@/features/dashboard/Sub Features/RegisterUser/components/UsersTable";
 import { useRegisterUser } from "@/features/dashboard/Sub Features/RegisterUser/hooks/useRegisterUser";
 import { fetchUsers } from "@/features/dashboard/Sub Features/RegisterUser/usersThunks";
+import { showToast } from "@/shared/components/Toast/api/toastSlice";
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 // import { getUserService } from "@/features/dashboard/Sub Features/RegisterUser/services/registerUser.service";
@@ -21,18 +22,34 @@ const RegisterUser = () => {
 
   const { registerUser } = useRegisterUser();
 
+
   const handleSubmit = async (data: any) => {
 
     const result = await registerUser(data);
 
     if (result.success) {
 
+      //  SUCCESS TOAST
+      dispatch(showToast({
+        message: "User created successfully",
+        type: "success"
+      }));
+
       setModalOpen(false);
       dispatch(fetchUsers());
+
+    } else {
+
+      //  ERROR TOAST
+      dispatch(showToast({
+        message: result.message || "User creation failed",
+        type: "error"
+      }));
 
     }
 
   };
+
   useEffect(() => {
 
     dispatch(fetchUsers());

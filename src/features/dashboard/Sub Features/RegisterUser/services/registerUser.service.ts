@@ -1,5 +1,6 @@
-import { registerUserApi,getUsersApi } from "@/features/dashboard/Sub Features/RegisterUser/api/registerUser.api";
-import {type RegisterUserForm } from "@/features/dashboard/Sub Features/RegisterUser/validation/registerUser.schema";
+import { registerUserApi, getUsersApi } from "@/features/dashboard/Sub Features/RegisterUser/api/registerUser.api";
+import { type RegisterUserForm } from "@/features/dashboard/Sub Features/RegisterUser/validation/registerUser.schema";
+import type { AxiosError } from "axios";
 
 export const registerUserService = async (data: RegisterUserForm) => {
 
@@ -8,17 +9,25 @@ export const registerUserService = async (data: RegisterUserForm) => {
     const response = await registerUserApi(data);
 
     return {
-      success: true,
+      success: response?.IsSuccessful ?? true,
       data: response
     };
 
-  } catch (error) {
+  } catch (error: unknown) {
+
+    if ((error as AxiosError)?.isAxiosError) {
+      const err = error as AxiosError<any>;
+
+      return {
+        success: false,
+        message: err.response?.data?.Message || "User registration failed"
+      };
+    }
 
     return {
       success: false,
-      message: "User registration failed"
+      message: "Unexpected error occurred"
     };
-
   }
 
 };

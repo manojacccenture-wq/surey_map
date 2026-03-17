@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -15,17 +15,37 @@ import { resetPasswordAsync } from "@/features/auth/authThunk";
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
 
 // Validation
+// const resetSchema = z
+//   .object({
+//     password: z
+//       .string()
+//       .min(8, "Password must be at least 8 characters"),
+//     confirmPassword: z.string(),
+//   })
+//   .refine((data) => data.password === data.confirmPassword, {
+//     message: "Passwords do not match",
+//     path: ["confirmPassword"],
+//   });
+
+
 const resetSchema = z
   .object({
     password: z
       .string()
       .min(8, "Password must be at least 8 characters"),
+
     confirmPassword: z.string(),
+
+    otp: z
+      .string()
+      .min(6, "OTP must be 6 digits")
+      .max(6, "OTP must be 6 digits"),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
   });
+
 
 type ResetPasswordFormData = z.infer<typeof resetSchema>;
 
@@ -34,10 +54,9 @@ const ResetPassword: React.FC = () => {
   const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error } = useAppSelector((state) => state.auth);
+  const { status, error, resetPasswordEmail } = useAppSelector((state) => state.auth);
 
 
-  const email: string | null = localStorage.getItem("resetEmail");
 
   const {
     register,
@@ -59,15 +78,17 @@ const ResetPassword: React.FC = () => {
   const onSubmit = async (data: ResetPasswordFormData) => {
     dispatch(clearError());
 
-    if (!email) {
+    if (!resetPasswordEmail) {
       return;
     }
 
     try {
       await dispatch(
         resetPasswordAsync({
-          email: email,
-          newPassword: data.password,
+          username: resetPasswordEmail,
+          password: data.password,
+          confirmPassword: data.confirmPassword,
+          code: data.otp,
         })
       ).unwrap();
     } catch (err) {
@@ -95,6 +116,7 @@ const ResetPassword: React.FC = () => {
             helperText={errors.password?.message}
             {...register("password")}
             disabled={isLoading}
+            hideOnBlur={true}
           />
 
           <Input
@@ -104,6 +126,16 @@ const ResetPassword: React.FC = () => {
             error={!!errors.confirmPassword}
             helperText={errors.confirmPassword?.message}
             {...register("confirmPassword")}
+            disabled={isLoading}
+          />
+
+          <Input
+            type="text"
+            label="OTP Code"
+            placeholder="Enter OTP"
+            error={!!errors.otp}
+            helperText={errors.otp?.message}
+            {...register("otp")}
             disabled={isLoading}
           />
 

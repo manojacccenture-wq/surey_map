@@ -1,4 +1,4 @@
-import  {
+import {
   useState,
   useMemo,
   useRef,
@@ -6,6 +6,7 @@ import  {
   type ChangeEvent,
   type FocusEvent,
   type ReactNode,
+  useEffect,
 } from "react";
 import Input from '@/shared/components/UI/Input/Input';
 
@@ -205,7 +206,28 @@ const PasswordStrengthInput = forwardRef<
   };
 
   const showOverlay =
-    showStrength && isFocused && password && strengthData;
+    showStrength &&
+    isFocused &&
+    password &&
+    strengthData &&
+    strengthData.level !== "strong" &&
+    strengthData.level !== "veryStrong";
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsFocused(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   /* ===== Render ===== */
 
@@ -255,11 +277,10 @@ const PasswordStrengthInput = forwardRef<
               {strengthData.requirements.map((req, idx) => (
                 <div key={idx} className="flex items-center gap-2 text-sm">
                   <div
-                    className={`w-4 h-4 rounded border ${
-                      req.met
-                        ? "bg-green-500 border-green-500"
-                        : "border-gray-300"
-                    }`}
+                    className={`w-4 h-4 rounded border ${req.met
+                      ? "bg-green-500 border-green-500"
+                      : "border-gray-300"
+                      }`}
                   />
                   <span>{req.label}</span>
                 </div>
