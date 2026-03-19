@@ -1,5 +1,7 @@
 import React, { useState, useCallback } from "react";
 import type { ForwardedRef } from "react";
+import eyeOpen from "@/assets/Images/Icons/common/eye.png"
+import eyeClose from "@/assets/Images/Icons/common/eye-off.png"
 
 interface InputProps
   extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "onChange"> {
@@ -12,6 +14,7 @@ interface InputProps
   className?: string;
   containerClass?: string;
   icon?: React.ElementType;
+  showPasswordToggle?: boolean;
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -31,10 +34,17 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       value: controlledValue,
       defaultValue,
       icon: Icon,
+      showPasswordToggle,
       ...props
     },
     ref: ForwardedRef<HTMLInputElement>
   ) => {
+    const [showPassword, setShowPassword] = useState(false);
+
+ const isPassword = type === "password" && showPasswordToggle;
+
+
+
     const isControlled = controlledValue !== undefined;
 
     const [uncontrolledValue, setUncontrolledValue] = useState<string>(
@@ -147,7 +157,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           <input
             autoComplete="off"
             ref={ref}
-            type={type}
+         type={isPassword ? (showPassword ? "text" : "password") : type}
             value={value}
             // onChange={isRHF ? onChange : handleChange}
             onChange={handleChange}
@@ -156,6 +166,19 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             className={baseInputClasses}
             {...props}
           />
+
+          {isPassword && (
+            <div
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-[12px] top-1/2 -translate-y-1/2 cursor-pointer"
+            >
+              <img
+                src={showPassword ? eyeOpen : eyeClose}
+                className="h-4 w-auto"
+                alt="toggle password"
+              />
+            </div>
+          )}
         </div>
 
         {helperText && <p className={helperClasses}>{helperText}</p>}

@@ -109,6 +109,7 @@ const SignIn: React.FC = () => {
               type="password"
               placeholder="Password"
               error={!!errors.password}
+              showPasswordToggle
               {...register("password")}
               helperText={errors.password?.message}
 
