@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { noHtml } from "@/utils/zod/zodReuser";
 
 export const registerUserSchema = z.object({
 
-  name: z
-    .string()
-    .min(2, "Name must be at least 2 characters"),
+  name: noHtml("Name", 2),
+
 
   email: z
     .string()
@@ -14,20 +14,17 @@ export const registerUserSchema = z.object({
     .string()
     .regex(/^[0-9]{10}$/, "Phone number must be exactly 10 digits"),
 
-  username: z
-    .string()
-    .min(4, "Username must be 4 characters"),
+  username: noHtml("Username", 4),
 
-  usercode: z
-    .string()
-    .min(3, "User code required"),
 
-password: z
-  .string()
-  .min(8, "Password must be at least 8 characters")
-  .regex(/[A-Z]/, "Must contain at least one uppercase letter")
-  .regex(/[a-z]/, "Must contain at least one lowercase letter")
-  .regex(/[0-9]/, "Must contain at least one number"),
+  usercode: noHtml("User code", 3),
+
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .regex(/[A-Z]/, "Must contain at least one uppercase letter")
+    .regex(/[a-z]/, "Must contain at least one lowercase letter")
+    .regex(/[0-9]/, "Must contain at least one number"),
 
   confirmPassword: z
     .string()
