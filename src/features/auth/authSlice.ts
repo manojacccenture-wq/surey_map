@@ -117,6 +117,10 @@ const authSlice = createSlice({
         state.mfaPending = false;
         state.resetPasswordEmail = null;
         state.error = null;
+
+        // ✅ IMPORTANT FIXES
+        state.user = null;
+        state.tempCredentials = null;
       })
       .addCase(logoutAsync.rejected, (state, action: any) => {
         state.status = 'failed';
@@ -164,10 +168,19 @@ const authSlice = createSlice({
       .addCase(restoreSessionAsync.pending, (state) => {
         state.status = "loading";
       })
-      .addCase(restoreSessionAsync.fulfilled, (state, action) => {
+      .addCase(restoreSessionAsync.fulfilled, (state, action: any) => {
         state.status = "succeeded";
+
+        const role = action.payload?.Role?.toLowerCase();
+
+        if (role === "operator") {
+          state.isAuthenticated = false;
+          state.user = null;
+          return;
+        }
+
         state.isAuthenticated = true;
-        state.user = action.payload; // ✅ IMPORTANT
+        state.user = action.payload;
       })
       .addCase(restoreSessionAsync.rejected, (state) => {
         state.status = "idle";

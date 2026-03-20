@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef,  useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import type { ColDef, GridReadyEvent } from "ag-grid-community";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
@@ -6,7 +6,6 @@ import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import Button from "@/shared/components/UI/Button/Button";
-import Input from "@/shared/components/UI/Input/Input";
 
 
 import { useAppDispatch, useAppSelector } from "@/app/store/hook";
@@ -32,13 +31,13 @@ const SurveyList = () => {
 
 
   const gridRef = useRef<AgGridReact>(null);
-  const [quickSearch, setQuickSearch] = useState("");
+
 
 const columnDefs: ColDef[] = [
   { headerName: "Serial No", field: "serialNo", maxWidth: 110 },
   // { headerName: "Id", field: "Id" },
 
-  { headerName: "BP No", field: "BPNo" },
+  { headerName: "BP No", field: "BPNo", minWidth: 180  },
   { headerName: "Name", field: "Name" },
   { headerName: "Mobile No", field: "MobileNo" },
   { headerName: "Thana", field: "Thana" },
@@ -99,7 +98,7 @@ const rowData = surveyListAdapter(data);
   };
 
   return (
-    <div className="w-full flex flex-col gap-4">
+    <div className="w-full flex flex-col gap-0">
 
       {/* Toolbar */}
       <div className="flex items-center justify-between bg-white p-4 rounded-lg ">
@@ -111,7 +110,7 @@ const rowData = surveyListAdapter(data);
         <div className="flex items-center gap-3">
 
           {/* Search */}
-          <Input
+          {/* <Input
             type="text"
             placeholder="Search survey..."
             value={quickSearch}
@@ -125,20 +124,21 @@ const rowData = surveyListAdapter(data);
                 value
               );
             }}
-          // className="border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+          /> */}
           {/* Export */}
           <Button
+          size="sm"
             onClick={exportToCSV}
-            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
+
+            className=" bg-green-600 hover:bg-green-700 text-white rounded-md text-xs"
           >
-            Export CSV
+            Export {" "} {" "} CSV
           </Button>
         </div>
       </div>
 
       {/* Grid */}
-      <div className="ag-theme-alpine w-full h-[70vh] rounded-lg overflow-hidden p-2">
+      <div className="ag-theme-alpine w-full h-[80vh] rounded-lg overflow-hidden p-2">
         <AgGridReact
           ref={gridRef}
           rowData={rowData}

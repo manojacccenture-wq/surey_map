@@ -1,6 +1,8 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import type { ReactNode } from 'react';
-import { useAppSelector } from '@/app/store/hook';
+import { useRef, type ReactNode } from 'react';
+import { useAppDispatch, useAppSelector } from '@/app/store/hook';
+
+import { logoutAsync } from '@/features/auth/authThunk';
 // import { hasPermission } from '../../../utils/permissionUtils/permissionUtils';
 
 
@@ -10,7 +12,7 @@ interface RouteGuardProps {
   requirePublic?: boolean;
   requireMfa?: boolean;
   requireResetState?: boolean;
-  requiredPermission?: string;  
+  requiredPermission?: string;
 }
 
 const RouteGuard = ({
@@ -21,10 +23,25 @@ const RouteGuard = ({
   requireResetState = false,
 }: RouteGuardProps) => {
   const location = useLocation();
+  const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { isAuthenticated, mfaPending } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, mfaPending, user } = useAppSelector((state) => state.auth);
 
+  const role = user?.Role?.toLowerCase();
+
+
+  const hasLoggedOut = useRef(false);
+
+  // 🚫 GLOBAL BLOCK
+  if (role === "operator") {
+    if (!hasLoggedOut.current) {
+      hasLoggedOut.current = true;
+      dispatch(logoutAsync());
+    }
+
+    return <Navigate to="/access-denied" replace />;
+  }
 
 
   // 1️⃣ Public route (like login, signup)
@@ -33,8 +50,14 @@ const RouteGuard = ({
   }
 
   // 2️⃣ Protected route
-  if (requireAuth && !isAuthenticated) {
-    return <Navigate to="/" replace />;
+  if (requireAuth) {
+    if (!isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
+
+    if (user?.Role?.toLowerCase() === "operator") {
+      return <Navigate to="/access-denied" replace />;
+    }
   }
 
   // 3️⃣ MFA route
