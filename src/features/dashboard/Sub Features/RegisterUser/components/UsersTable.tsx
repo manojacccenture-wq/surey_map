@@ -11,10 +11,12 @@ interface User {
 interface Props {
   users: any[];
   loading: boolean;
+  onEdit: (user: any) => void;
+  
 
 }
 
-const UsersTable: React.FC<Props> = ({ users }) => {
+const UsersTable: React.FC<Props> = ({ users,onEdit }) => {
 
   const tableData: User[] = users.map((u) => ({
     id: u.Id,
@@ -42,12 +44,23 @@ const UsersTable: React.FC<Props> = ({ users }) => {
       label: "Phone",
       render: (value) => value ?? "-"
     }
+
   ];
 
   return (
     <Table<User>
       columns={columns}
       data={tableData}
+      actions={(row, index) => { 
+        return <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(users[index as number]);
+          }}
+        >
+          ✏️
+        </button>
+      }}
     />
   );
 };

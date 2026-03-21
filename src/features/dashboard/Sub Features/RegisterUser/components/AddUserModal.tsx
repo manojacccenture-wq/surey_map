@@ -15,12 +15,14 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: RegisterUserForm) => void;
+  defaultValues?: any;
 }
 
 const AddUserModal: React.FC<Props> = ({
   isOpen,
   onClose,
-  onSubmit
+  onSubmit,
+  defaultValues
 }) => {
 
   const {
@@ -31,13 +33,25 @@ const AddUserModal: React.FC<Props> = ({
   } = useForm<RegisterUserForm>({
     resolver: zodResolver(registerUserSchema)
   });
-
+  // ✅ 2. Prefill when editing (ADD HERE)
   useEffect(() => {
-  if (!isOpen) {
-    reset();
-  }
-}, [isOpen, reset]);
+    if (defaultValues && isOpen) {
+      reset({
+        name: defaultValues.Name,
+        email: defaultValues.Email,
+        phone: defaultValues.PhoneNumber,
+        username: defaultValues.UserName,
+        usercode: defaultValues.UserCode
+      });
+    }
+  }, [defaultValues, isOpen, reset]);
 
+  // ✅ 3. Reset when modal closes (ADD HERE)
+  useEffect(() => {
+    if (!isOpen) {
+      reset();
+    }
+  }, [isOpen, reset]);
   return (
     <Modal
       isOpen={isOpen}
@@ -85,7 +99,7 @@ const AddUserModal: React.FC<Props> = ({
           helperText={errors.usercode?.message}
         />
 
-        <Input
+        {/* <Input
           type="password"
           label="Password"
           {...register("password")}
@@ -99,7 +113,7 @@ const AddUserModal: React.FC<Props> = ({
           {...register("confirmPassword")}
           error={!!errors.confirmPassword}
           helperText={errors.confirmPassword?.message}
-        />
+        /> */}
 
         <div className="flex justify-end gap-3 mt-4">
 

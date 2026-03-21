@@ -19,9 +19,9 @@ export const registerUserApi = async (data: RegisterUserForm) => {
     Email: data.email,
     PhoneNumber: data.phone,
     UserName: data.username,
-    UserCode: data.usercode,
-    Password: data.password,
-    ConfirmPassword: data.confirmPassword
+    UserCode: data.usercode
+    // Password: data.password,
+    // ConfirmPassword: data.confirmPassword
   };
 
   const response = await apiClient.post(`${BASE}Register`, payload);

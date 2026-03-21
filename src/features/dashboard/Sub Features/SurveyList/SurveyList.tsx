@@ -27,7 +27,7 @@ const SurveyList = () => {
   }, [dispatch]);
 
   
-  
+  const GLOBAL_COLUMN_WIDTH = 180;
 
 
   const gridRef = useRef<AgGridReact>(null);
@@ -155,7 +155,7 @@ const rowData = surveyListAdapter(data);
             floatingFilter: true,
             resizable: true,
             flex: 1,
-            minWidth: 120,
+            minWidth: GLOBAL_COLUMN_WIDTH,
           }}
         />
 

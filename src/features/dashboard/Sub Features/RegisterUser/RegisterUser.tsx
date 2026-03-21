@@ -18,6 +18,7 @@ const RegisterUser = () => {
 
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<any | null>(null);
 
 
   const { registerUser } = useRegisterUser();
@@ -25,29 +26,38 @@ const RegisterUser = () => {
 
   const handleSubmit = async (data: any) => {
 
-    const result = await registerUser(data);
+    let result;
+
+    if (editingUser) {
+      //  CALL UPDATE API (you will create this)
+      result = await registerUser({ ...data, id: editingUser.Id });
+    } else {
+      result = await registerUser(data);
+    }
 
     if (result.success) {
-
-      //  SUCCESS TOAST
       dispatch(showToast({
-        message: "User created successfully",
+        message: editingUser
+          ? "User updated successfully"
+          : "User created successfully",
         type: "success"
       }));
 
       setModalOpen(false);
+      setEditingUser(null);
       dispatch(fetchUsers());
 
     } else {
-
-      //  ERROR TOAST
       dispatch(showToast({
-        message: result.message || "User creation failed",
+        message: result.message || "Operation failed",
         type: "error"
       }));
-
     }
+  };
 
+  const handleEdit = (user: any) => {
+    setEditingUser(user);
+    setModalOpen(true);
   };
 
   useEffect(() => {
@@ -72,7 +82,7 @@ const RegisterUser = () => {
 
       </div>
 
-      <UsersTable users={users} loading={loading} />
+      <UsersTable users={users} loading={loading} onEdit={handleEdit} />
 
       <AddUserModal
         isOpen={modalOpen}
@@ -80,6 +90,16 @@ const RegisterUser = () => {
         onSubmit={handleSubmit}
       />
 
+
+      <AddUserModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setEditingUser(null);
+        }}
+        onSubmit={handleSubmit}
+        defaultValues={editingUser}
+      />
     </div>
   );
 };

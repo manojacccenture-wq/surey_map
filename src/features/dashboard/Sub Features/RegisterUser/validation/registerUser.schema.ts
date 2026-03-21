@@ -19,7 +19,7 @@ export const registerUserSchema = z.object({
 
   usercode: noHtml("User code", 3),
 
-  password: z
+/*   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
     .regex(/[A-Z]/, "Must contain at least one uppercase letter")
@@ -27,11 +27,11 @@ export const registerUserSchema = z.object({
     .regex(/[0-9]/, "Must contain at least one number"),
 
   confirmPassword: z
-    .string()
+    .string() */
 
-}).refine((data) => data.password === data.confirmPassword, {
+})/* .refine((data) => data.password === data.confirmPassword, {
   message: "Passwords do not match",
   path: ["confirmPassword"]
-});
+}); */
 
 export type RegisterUserForm = z.infer<typeof registerUserSchema>;
