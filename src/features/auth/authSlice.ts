@@ -10,6 +10,7 @@ interface AuthState {
   user: any | null; // replace `any` with proper User type later
   isAuthenticated: boolean;
   mfaPending: boolean;
+  firstTimeLogin: boolean;
   tempCredentials: TempCredentials | null;
   resetPasswordEmail: string | null;
   status: 'idle' | 'loading' | 'succeeded' | 'failed' | 'pending';
@@ -24,6 +25,7 @@ const initialState: AuthState = {
   resetPasswordEmail: null,
   status: 'idle', // idle | loading | succeeded | failed
   error: null,
+  firstTimeLogin: false,
 };
 
 
@@ -100,6 +102,7 @@ const authSlice = createSlice({
         state.mfaPending = false;
         state.isAuthenticated = true;
         state.tempCredentials = null; // VERY IMPORTANT
+        state.firstTimeLogin = action.payload?.IsFirstTimeLogin === true;
       })
       .addCase(verifyMfaAsync.rejected, (state, action: any) => {
         state.status = 'failed';

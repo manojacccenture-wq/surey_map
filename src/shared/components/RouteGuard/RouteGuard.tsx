@@ -26,12 +26,20 @@ const RouteGuard = ({
   const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { isAuthenticated, mfaPending, user } = useAppSelector((state) => state.auth);
+  const { isAuthenticated, mfaPending, user,firstTimeLogin } = useAppSelector((state) => state.auth);
 
   const role = user?.Role?.toLowerCase();
 
 
   const hasLoggedOut = useRef(false);
+
+  // 🔐 First time login enforcement
+  if (isAuthenticated && firstTimeLogin) {
+    // allow ONLY reset page
+    if (location.pathname !== "/reset_Flow") {
+      return <Navigate to="/reset_Flow" replace />;
+    }
+  }
 
   // 🚫 GLOBAL BLOCK
   if (role === "operator") {
@@ -83,13 +91,9 @@ const RouteGuard = ({
 
   // 5️⃣ Reset password route protection
 
-  if (
-    requireResetState &&
-    !location.state?.identifier &&
-    location.pathname !== "/forgotPassword"
-  ) {
-    return <Navigate to="/forgotPassword" replace />;
-  }
+if (requireResetState && !firstTimeLogin) {
+  return <Navigate to="/dashboard" replace />;
+}
 
   return children;
 };

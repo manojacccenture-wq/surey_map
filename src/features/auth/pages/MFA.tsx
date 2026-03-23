@@ -21,7 +21,7 @@ const MFA: React.FC = () => {
   const dispatch = useAppDispatch();
 
   // Get auth state from Redux
-  const { status, error, mfaPending, tempCredentials } = useAppSelector((state) => state.auth);
+  const { status, error, mfaPending, tempCredentials,user } = useAppSelector((state) => state.auth);
 
 
   const [timer, setTimer] = useState<number>(60);
@@ -41,9 +41,13 @@ const MFA: React.FC = () => {
   // Handle successful MFA verification
   useEffect(() => {
     if (!mfaPending && status === "succeeded") {
-      navigate("/dashboard");
+      if (user?.IsFirstTimeLogin) {
+        navigate("/reset_Flow");
+      } else {
+        navigate("/dashboard");
+      }
     }
-  }, [mfaPending, status, navigate]);
+  }, [mfaPending, status, navigate, user?.IsFirstTimeLogin]);
 
   const startTimer = (): void => {
     let count = 60;

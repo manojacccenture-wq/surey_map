@@ -20,6 +20,7 @@ import RegisterUser from "@/features/dashboard/Sub Features/RegisterUser/Registe
 import SurveyList from "@/features/dashboard/Sub Features/SurveyList/SurveyList";
 import Logout from "@/features/dashboard/Public Features/Logout/Logout";
 import AccessDenied from "@/features/AccessDenied/AccessDenied";
+import PasswordReset from "@/features/auth/pages/PasswordReset";
 
 
 
@@ -35,6 +36,9 @@ const AppRouter = () => {
           <Route path="/signup" element={<RouteGuard requirePublic> <SignUp /></RouteGuard>} />
 
           <Route path="/forgotPassword" element={<RouteGuard requirePublic> <ForgotPassword /></RouteGuard>} /></Route>
+
+        <Route path="/reset_Flow" element={ <RouteGuard requireAuth requireResetState><PasswordReset /></RouteGuard>}
+        />
 
         {/* MFA */}
 
@@ -59,9 +63,6 @@ const AppRouter = () => {
 
         <Route path="/reset-password" element={<RouteGuard requireResetState> <ResetPassword /> </RouteGuard>} />
 
-        {/* Access Denied */}
-
-        {/* <Route path="/access-denied" element={<AccessDenied />} /> */}
 
         {/* Log Out */}
 

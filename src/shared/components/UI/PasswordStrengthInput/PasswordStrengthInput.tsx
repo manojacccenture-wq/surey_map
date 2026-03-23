@@ -236,6 +236,7 @@ const PasswordStrengthInput = forwardRef<
       <Input
         ref={ref}
         type="password"
+        showPasswordToggle
         label={label}
         placeholder={placeholder}
         error={error}
